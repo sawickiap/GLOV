@@ -9,6 +9,7 @@
     <ClInclude Include="..\include\GLOV.h">
       <Filter>public_include</Filter>
     </ClInclude>
+    <ClInclude Include="vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLOV.cpp" />
