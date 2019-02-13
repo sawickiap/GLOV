@@ -9,10 +9,6 @@ namespace GLOV
 	class Buffer;
 	class Texture;
 
-	class DepthStencil;
-	class Blend;
-	class Rasterizer;
-	class Multisample;
 	class Tessellation;
 	class Program;
 	class Viewport;
@@ -114,16 +110,16 @@ namespace GLOV
 		void SetProgram(const Program* pProgram)
 		{
 		}
-		void SetDepthStencil(const DepthStencil* pDepthStencil)
+		void SetDepthStencil(const DepthStencilStateDesc* pDepthStencil)
 		{
 		}
-		void SetBlend(const Blend *pBlend)
+		void SetColorBlend(const ColorBlendStateDesc* pBlend)
 		{
 		}
-		void SetRasterizer(const Rasterizer *pRasterizer)
+		void SetRasterizer(const RasterizationStateDesc* pRasterizer)
 		{
 		}
-		void SetMultisample(const Multisample *pMultisample)
+		void SetMultisample(const MultisampleStateDesc* pMultisample)
 		{
 		}
 

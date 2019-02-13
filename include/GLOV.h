@@ -69,11 +69,17 @@ enum class CullMode : uint8_t
 	FRONT_BACK = 0x3
 };
 
-enum class FillMode : uint8_t
+enum class FrontFace : uint8_t
 {
-	SOLID     = 0x0,
-	WIREFRAME = 0x1,
-	POINT     = 0x2
+	COUNTER_CLOCKWISE = 0x0,
+	CLOCKWISE         = 0x1
+};
+
+enum class PolygonMode : uint8_t
+{
+	FILL  = 0x0,
+	LINE  = 0x1,
+	POINT = 0x2
 };
 
 enum class LogicOp : uint8_t
@@ -96,7 +102,18 @@ enum class LogicOp : uint8_t
 	SET           = 0xF
 };
 
-enum class BlendEquation : uint8_t
+enum class SampleCount 
+{
+	COUNT_1  = 0x01,
+	COUNT_2  = 0x02,
+	COUNT_4  = 0x04,
+	COUNT_8  = 0x08,
+	COUNT_16 = 0x10,
+	COUNT_32 = 0x20,
+	COUNT_64 = 0x40,
+};
+
+enum class BlendOp : uint8_t
 {
 	ADD          = 0x0,
 	SUBTRACT     = 0x1,
@@ -105,7 +122,7 @@ enum class BlendEquation : uint8_t
 	MAX          = 0x4
 };
 
-enum class BlendFunc : uint8_t
+enum class BlendFactor : uint8_t
 {
 	ZERO                     = 0x0,
 	ONE                      = 0x1,
@@ -126,6 +143,14 @@ enum class BlendFunc : uint8_t
 	ONE_MINUS_SRC1_COLOR     = 0x10,
 	SRC1_ALPHA               = 0x11,
 	ONE_MINUS_SRC1_ALPHA     = 0x12
+};
+
+enum class ColorComponent
+{
+	R = 0x1,
+	G = 0x2,
+	B = 0x4,
+	A = 0x8,
 };
 
 enum class VertexInputRate : uint8_t
@@ -205,6 +230,18 @@ enum class BufferUsage : uint16_t
 	RENDER_TARGET_TEX = GPU_WRITE_OFTEN | GPU_READ,
 	BUFFER_DYNAMIC = CPU_WRITE_OFTEN | GPU_READ,
 	BUFFER_DEFAULT = CPU_WRITE_RARE | GPU_READ,
+};
+
+enum class ShaderStage : uint32_t
+{
+	VERTEX       = 0x00000001,
+	HULL         = 0x00000002,
+	DOMAIN       = 0x00000004,
+	GEOMETRY     = 0x00000008,
+	FRAGMENT     = 0x00000010,
+	COMPUTE      = 0x00000020,
+	ALL_GRAPHICS = 0x0000001F,
+	ALL          = 0x7FFFFFFF
 };
 
 enum class ImgBufFormat : uint16_t
@@ -406,6 +443,64 @@ enum class ImgBufFormat : uint16_t
 	ASTC_12x12_SRGB_BLOCK,
 	UNDEFINED,
 	NUM_IB_FORMAT_TYPES = UNDEFINED,
+};
+
+struct RasterizationStateDesc
+{
+	bool        depthClampEnable;
+	bool        rasterizerDiscardEnable;
+	PolygonMode polygonMode;
+	CullMode    cullMode;
+	FrontFace   frontFace;
+	bool        depthBiasEnable;
+	float       depthBiasConstantFactor;
+	float       depthBiasClamp;
+	float       depthBiasSlopeFactor;
+	float       lineWidth;
+};
+
+struct MultisampleStateDesc
+{
+	SampleCount rasterizationSamples;
+	bool        sampleShadingEnable;
+	float       minSampleShading;
+	uint32_t    sampleMask;
+	bool        alphaToCoverageEnable;
+	bool        alphaToOneEnable;
+};
+
+struct DepthStencilStateDesc
+{
+	bool      depthTestEnable;
+	bool      depthWriteEnable;
+	CompareOp depthCompareOp;
+	bool      depthBoundsTestEnable;
+	bool      stencilTestEnable;
+	StencilOp front;
+	StencilOp back;
+	float     minDepthBounds;
+	float     maxDepthBounds;
+};
+
+struct ColorBlendAttachmentStateDesc
+{
+	bool           blendEnable;
+	BlendFactor    srcColorBlendFactor;
+	BlendFactor    dstColorBlendFactor;
+	BlendOp        colorBlendOp;
+	BlendFactor    srcAlphaBlendFactor;
+	BlendFactor    dstAlphaBlendFactor;
+	BlendOp        alphaBlendOp;
+	ColorComponent colorWriteMask;
+};
+
+struct ColorBlendStateDesc
+{
+	bool                                 logicOpEnable;
+	LogicOp                              logicOp;
+	uint32_t                             attachmentCount;
+	const ColorBlendAttachmentStateDesc* pAttachments;
+	float                                blendConstants[4];
 };
 
 class Instance;

@@ -109,19 +109,19 @@ namespace GLOV
 		{
 			static_cast<T*>(this)->SetPrimitiveTopology(topology);
 		}
-		void SetDepthStencil(const DepthStencil* pDepthStencil)
+		void SetDepthStencil(const DepthStencilStateDesc* pDepthStencil)
 		{
 			static_cast<T*>(this)->SetDepthStencil(pDepthStencil);
 		}
-		void SetBlend(const Blend *pBlend)
+		void SetBlend(const ColorBlendStateDesc* pBlend)
 		{
 			static_cast<T*>(this)->SetBlend(pBlend);
 		}
-		void SetRasterizer(const Rasterizer *pRasterizer)
+		void SetRasterizer(const RasterizationStateDesc* pRasterizer)
 		{
 			static_cast<T*>(this)->SetRasterizer(pRasterizer);
 		}
-		void SetMultisample(const Multisample *pMultisample)
+		void SetMultisample(const MultisampleStateDesc* pMultisample)
 		{
 			static_cast<T*>(this)->SetMultisample(pMultisample);
 		}
