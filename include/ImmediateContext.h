@@ -1,148 +1,114 @@
 #pragma once
 
 #include "GLOV.h"
+#include <map>
+#include <vulkan/vulkan.h>
 
 namespace GLOV
 {
-	class InputLayout;
-	class Sampler;
-	class Buffer;
-	class Texture;
+	struct ImpCreateVulkan
+	{
+		VkPipelineLayoutCreateInfo CreateInputLayout(const InputLayout *pInputLayout)
+		{
+			VkPipelineLayoutCreateInfo info = {};
+			return info;
+		}
+		VkPipelineInputAssemblyStateCreateInfo CreatePrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
+		{
+			VkPipelineInputAssemblyStateCreateInfo info = {};
+			return info;
+		}
+		VkPipelineShaderStageCreateInfo CreateProgram(const Program* pProgram)
+		{
+			VkPipelineShaderStageCreateInfo info = {};
+			return info;
+		}
+		VkPipelineDepthStencilStateCreateInfo CreateDepthStencil(const DepthStencilStateDesc* pDepthStencil)
+		{
+			VkPipelineDepthStencilStateCreateInfo info = {};
+			return info;
+		}
+		VkPipelineColorBlendStateCreateInfo CreateColorBlend(const ColorBlendStateDesc* pBlend)
+		{
+			VkPipelineColorBlendStateCreateInfo info = {};
+			return info;
+		}
+		VkPipelineRasterizationStateCreateInfo CreateRasterizer(const RasterizationStateDesc* pRasterizer)
+		{
+			VkPipelineRasterizationStateCreateInfo info = {};
+			return info;
+		}
+		VkPipelineMultisampleStateCreateInfo CreateMultisample(const MultisampleStateDesc* pMultisample)
+		{
+			VkPipelineMultisampleStateCreateInfo info = {};
+			return info;
+		}
 
-	class Tessellation;
-	class Program;
-	class Viewport;
-	class Scissor;
+		VkGraphicsPipelineCreateInfo CreatePipeline()
+		{
+			VkGraphicsPipelineCreateInfo info = {};
+			return info;
+		}
+	};
 
 	class ImmediateContext
 	{
-		void Begin()
-		{
-		}
-		void End()
-		{
-		}
+		std::map<uint32_t, VkPipeline> graphicsPipelineMap;
 
-		void BeginRenderPass()
-		{
-		}
-		void EndRenderPass()
-		{
-		}
+	public:
+		void Begin();
+		void End();
+		
+		void BeginRenderPass();
+		void EndRenderPass();
 
-		void BeginQuery() {}
-		void EndQuery() {}
+		void BeginQuery();
+		void EndQuery();
 
-		void SetUniformBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const *ppBuffers)
-		{
-		}
-		void SetUniformBuffer(uint32_t slot, const Buffer* pConstantBuffer)
-		{
-		}
+		void BindUniformBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const *ppBuffers);
+		void BindUniformBuffer(uint32_t slot, const Buffer* pConstantBuffer);
+		void BindStorageBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const *ppBuffers);
+		void BindStorageBuffer(uint32_t slot, const Buffer* pBuffer);
+		void BindSamplers(uint32_t startSlot, uint32_t numSamplers, Sampler*const* ppSamplers);
+		void BindSampler(uint32_t slot, const Sampler* pSampler);
+		void BindTextures(uint32_t startSlot, uint32_t numTextures, Texture*const* ppTextures);
+		void BindTexture(uint32_t slot, const Sampler* pTexture);
 
-		void SetStorageBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const *ppBuffers)
-		{
-		}
-		void SetStorageBuffer(uint32_t slot, const Buffer* pBuffer)
-		{
-		}
+		void BindVertexBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const* ppVertexBuffers, const uint32_t* pStrides, const uint32_t* pOffsets);
+		void BindVertexBuffer(uint32_t slot, const Buffer* pVertexBuffer, uint32_t pStride, uint32_t pOffset);
+		void BindIndexBuffer(const Buffer* pIndexBuffer, IndexType format, uint32_t offset);
+		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
+		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance);
+		void DrawIndirect(const Buffer* buffer, uint32_t offset, uint32_t drawCount, uint32_t stride);
+		void DrawIndirectCount(const Buffer* buffer, uint32_t offset, const Buffer* countBuffer, uint32_t countBufferOffset, uint32_t maxDrawCount, uint32_t stride);
 
-		void SetSamplers(uint32_t startSlot, uint32_t numSamplers, Sampler*const* ppSamplers)
-		{
-		}
-		void SetSampler(uint32_t slot, const Sampler* pSampler)
-		{
-		}
+		void PushConstants();
 
-		void SetTextures(uint32_t startSlot, uint32_t numTextures, Texture*const* ppTextures)
-		{
-		}
-		void SetTexture(uint32_t slot, const Sampler* pTexture)
-		{
-		}
+		void BindViewports(uint32_t numViewports, const Viewport *pViewports);
+		void BindViewport(uint32_t slot, const Viewport& viewport);
+		void BindScissor(uint32_t numScissors, const Scissor* pScissors);
+		void BindScissor(uint32_t slot, const Scissor& scissor);
 
-		void BindVertexBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const* ppVertexBuffers, const uint32_t* pStrides, const uint32_t* pOffsets)
-		{
-		}
-		void BindVertexBuffer(uint32_t slot, const Buffer* pVertexBuffer, uint32_t pStride, uint32_t pOffset)
-		{
-		}
-		void BindIndexBuffer(const Buffer* pIndexBuffer, IndexType format, uint32_t offset)
-		{
-		}
+		void BindInputLayout(const InputLayout *pInputLayout);
+		void BindPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable);
+		void BindProgram(const Program* pProgram);
+		void BindDepthStencil(const DepthStencilStateDesc* pDepthStencil);
+		void BindColorBlend(const ColorBlendStateDesc* pBlend);
+		void BindRasterizer(const RasterizationStateDesc* pRasterizer);
+		void BindMultisample(const MultisampleStateDesc* pMultisample);
 
-		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
-		{
-		}
-		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
-		{
-		}
-		void DrawIndirect(const Buffer* buffer, uint32_t offset, uint32_t drawCount, uint32_t stride)
-		{
-		}
-		void DrawIndirectCount(const Buffer* buffer, uint32_t offset, const Buffer* countBuffer, uint32_t countBufferOffset, uint32_t maxDrawCount, uint32_t stride)
-		{
-		}
-
-		void PushConstants()
-		{
-		}
-
-		void SetViewports(uint32_t numViewports, const Viewport *pViewports)
-		{
-		}
-		void SetViewport(uint32_t slot, const Viewport& viewport)
-		{
-		}
-		void SetScissor(uint32_t numScissors, const Scissor* pScissors)
-		{
-		}
-		void SetScissor(uint32_t slot, const Scissor& scissor)
-		{
-		}
-
-		void SetInputLayout(const InputLayout *pInputLayout)
-		{
-		}
-		void SetPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
-		{
-		}
-		void SetProgram(const Program* pProgram)
-		{
-		}
-		void SetDepthStencil(const DepthStencilStateDesc* pDepthStencil)
-		{
-		}
-		void SetColorBlend(const ColorBlendStateDesc* pBlend)
-		{
-		}
-		void SetRasterizer(const RasterizationStateDesc* pRasterizer)
-		{
-		}
-		void SetMultisample(const MultisampleStateDesc* pMultisample)
-		{
-		}
-
-
-
-
-		void Dispatch() {}
-		void DispatchIndirect() {}
-		void CopyBuffer() {}
-		void CopyImage() {}
-		void BlitImage() {}
-		void CopyBufferToImage() {}
-		void CopyImageToBuffer() {}
-		void UpdateBuffer() {}
-		void FillBuffer() {}
-		void ClearColorImage() {}
-		void ClearDepthStencilImage() {}
-		void ClearAttachments() {}
-		void ResolveImage() {}
-
-
-
-
-
+		void Dispatch();
+		void DispatchIndirect();
+		void CopyBuffer();
+		void CopyImage();
+		void BlitImage();
+		void CopyBufferToImage();
+		void CopyImageToBuffer();
+		void UpdateBuffer();
+		void FillBuffer();
+		void ClearColorImage();
+		void ClearDepthStencilImage();
+		void ClearAttachments();
+		void ResolveImage();
 	};
 }

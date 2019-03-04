@@ -266,19 +266,20 @@ enum class BufferUsage : uint16_t
 	BUFFER_DEFAULT    = CPU_WRITE_RARE | GPU_READ,
 };
 
-enum class ShaderStage : uint32_t
+enum class ShaderStage : uint8_t
 {
-	VERTEX       = 0x00000001,
-	HULL         = 0x00000002,
-	DOMAIN       = 0x00000004,
-	GEOMETRY     = 0x00000008,
-	FRAGMENT     = 0x00000010,
-	COMPUTE      = 0x00000020,
-	ALL_GRAPHICS = 0x0000001F,
-	ALL          = 0x7FFFFFFF
+	UNDEFINED    = 0x00,
+	VERTEX       = 0x01,
+	HULL         = 0x02,
+	DOMAIN       = 0x04,
+	GEOMETRY     = 0x08,
+	FRAGMENT     = 0x10,
+	COMPUTE      = 0x20,
+	ALL_GRAPHICS = 0x1F,
+	ALL          = 0x7F
 };
 
-enum class ImgBufFormat : uint16_t
+enum class ImageBufferFormat : uint16_t
 {
 	R3G3B2_UNORM_PACK8,
 	R4G4_UNORM_PACK8,
@@ -536,6 +537,39 @@ struct ColorBlendStateDesc
 	const ColorBlendAttachmentStateDesc* pAttachments;
 	float                                blendConstants[4];
 };
+
+class InputLayout
+{
+};
+
+class Sampler 
+{
+};
+
+class Buffer
+{
+};
+
+class Texture
+{
+};
+
+class Tessellation
+{
+};
+
+class Program
+{
+};
+
+class Viewport
+{
+};
+
+class Scissor
+{
+};
+
 
 class Instance;
 class Device;

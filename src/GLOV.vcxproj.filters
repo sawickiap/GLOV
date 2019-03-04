@@ -19,5 +19,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLOV.cpp" />
+    <ClCompile Include="ImmediateContext.cpp" />
   </ItemGroup>
 </Project>
