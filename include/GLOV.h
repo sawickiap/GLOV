@@ -28,31 +28,31 @@ enum class CompareOp : uint8_t
 
 enum class StencilOp : uint8_t
 {
-	KEEP     = 0x0,
-	ZERO     = 0x1,
-	REPLACE  = 0x2,
-	INCR_SAT = 0x3,
-	DECR_SAT = 0x4,
-	INVERT   = 0x5,
-	INCR     = 0x6,
-	DECR     = 0x7
+	KEEP            = 0x0,
+	ZERO            = 0x1,
+	REPLACE         = 0x2,
+	INCREMENT_CLAMP = 0x3,
+	DECREMENT_CLAMP = 0x4,
+	INVERT          = 0x5,
+	INCREMENT_WRAP  = 0x6,
+	DECREMENT_WRAP  = 0x7
 };
 
 enum class PrimitiveTopology : uint8_t
 {
-	TRIANGLES                = 0x0,
-	TRIANGLE_STRIP           = 0x1,
-	LINES                    = 0x2,
-	POINTS                   = 0x3,
-	LINE_STRIP               = 0x4,
+	POINT_LIST               = 0x0,
+	LINE_LIST                = 0x1,
+	LINE_STRIP               = 0x2,
+	TRIANGLE_LIST            = 0x3,
+	TRIANGLE_STRIP           = 0x4,
 	TRIANGLE_FAN             = 0x5,
-	LINES_ADJACENCY          = 0x6,
+	LINE_LIST_ADJACENCY      = 0x6,
 	LINE_STRIP_ADJACENCY     = 0x7,
-	TRIANGLES_ADJACENCY      = 0x8,
+	TRIANGLE_LIST_ADJACENCY  = 0x8,
 	TRIANGLE_STRIP_ADJACENCY = 0x9,
-	PATCH                    = 0xA,
+	PATCH_LIST               = 0xA,
 	UNDEFINED,
-	NUM_PRIMITIVE_TYPES = UNDEFINED
+	NUM_PRIMITIVE_TYPE = UNDEFINED
 };
 
 enum class IndexType : uint8_t
@@ -63,9 +63,9 @@ enum class IndexType : uint8_t
 
 enum class CullMode : uint8_t
 {
-	NONE = 0x0,
-	FRONT = 0x1,
-	BACK = 0x2,
+	NONE       = 0x0,
+	FRONT      = 0x1,
+	BACK       = 0x2,
 	FRONT_BACK = 0x3
 };
 
@@ -110,7 +110,7 @@ enum class SampleCount
 	COUNT_8  = 0x08,
 	COUNT_16 = 0x10,
 	COUNT_32 = 0x20,
-	COUNT_64 = 0x40,
+	COUNT_64 = 0x40
 };
 
 enum class BlendOp : uint8_t
@@ -145,19 +145,29 @@ enum class BlendFactor : uint8_t
 	ONE_MINUS_SRC1_ALPHA     = 0x12
 };
 
-enum class ColorComponent
+enum class BorderColor : uint8_t
+{
+	FLOAT_TRANSPARENT_BLACK = 0x0,
+	INT_TRANSPARENT_BLACK   = 0x1,
+	FLOAT_OPAQUE_BLACK      = 0x2,
+	INT_OPAQUE_BLACK        = 0x3,
+	FLOAT_OPAQUE_WHITE      = 0x4,
+	INT_OPAQUE_WHITE        = 0x5
+};
+
+enum class ColorComponent : uint8_t
 {
 	R = 0x1,
 	G = 0x2,
 	B = 0x4,
-	A = 0x8,
+	A = 0x8
 };
 
 enum class VertexInputRate : uint8_t
 {
 	VERTEX    = 0x0,
 	INSTANCE  = 0x1,
-	UNDEFINED = 0x2,
+	UNDEFINED,
 	NUM_VERTEX_INPUT_RATE = UNDEFINED
 };
 
@@ -175,7 +185,7 @@ enum class TextureType : uint8_t
 	TEXTURE_2D_MULTISAMPLE_ARRAY = 0x9,
 	TEXTURE_BUFFER               = 0xA,
 	TEXTURE_UNDEFINED,
-	NUM_TEXTURE_TYPES = TEXTURE_UNDEFINED
+	NUM_TEXTURE_TYPE = TEXTURE_UNDEFINED
 };
 
 enum class WrapMode : uint8_t
@@ -186,7 +196,8 @@ enum class WrapMode : uint8_t
 	MIRROR_CLAMP_TO_EDGE   = 0x3,
 	CLAMP_TO_BORDER        = 0x4,
 	MIRROR_CLAMP_TO_BORDER = 0x5,
-	NUM_WRAP_MODES
+	UNDEFINED,
+	NUM_WRAP_MODE = UNDEFINED
 };
 
 enum class WrapCoord : uint8_t
@@ -194,14 +205,16 @@ enum class WrapCoord : uint8_t
 	S = 0x0,
 	T = 0x1,
 	R = 0x2,
-	NUM_WRAP_COORDS
+	UNDEFINED,
+	NUM_WRAP_COORD = UNDEFINED
 };
 
 enum class MinMagFilter : uint8_t
 {
 	NEAREST = 0x0,
 	LINEAR  = 0x1,
-	NUM_MAG_FILTERS
+	UNDEFINED,
+	NUM_MINMAG_FILTER = UNDEFINED
 };
 
 enum class MipmapMode : uint8_t
@@ -209,7 +222,8 @@ enum class MipmapMode : uint8_t
 	NONE    = 0x0,
 	NEAREST = 0x1,
 	LINEAR  = 0x2,
-	NUM_MIPMAP_MODES
+	UNDEFINED,
+	NUM_MIPMAP_MODE = UNDEFINED
 };
 
 enum class BufferUsage : uint16_t
@@ -442,7 +456,7 @@ enum class ImgBufFormat : uint16_t
 	ASTC_12x12_UNORM_BLOCK,
 	ASTC_12x12_SRGB_BLOCK,
 	UNDEFINED,
-	NUM_IB_FORMAT_TYPES = UNDEFINED,
+	NUM_FORMAT_TYPE = UNDEFINED,
 };
 
 struct RasterizationStateDesc

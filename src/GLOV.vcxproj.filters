@@ -10,6 +10,12 @@
       <Filter>public_include</Filter>
     </ClInclude>
     <ClInclude Include="vk_mem_alloc.h" />
+    <ClInclude Include="..\include\Context.h">
+      <Filter>public_include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\ImmediateContext.h">
+      <Filter>public_include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLOV.cpp" />
