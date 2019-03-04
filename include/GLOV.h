@@ -23,7 +23,9 @@ enum class CompareOp : uint8_t
 	GREATER  = 0x4,
 	NOTEQUAL = 0x5,
 	GEQUAL   = 0x6,
-	ALWAYS   = 0x7
+	ALWAYS   = 0x7,
+	UNDEFINED,
+	NUM_COMPARE_OP = UNDEFINED
 };
 
 enum class StencilOp : uint8_t
@@ -35,7 +37,9 @@ enum class StencilOp : uint8_t
 	DECREMENT_CLAMP = 0x4,
 	INVERT          = 0x5,
 	INCREMENT_WRAP  = 0x6,
-	DECREMENT_WRAP  = 0x7
+	DECREMENT_WRAP  = 0x7,
+	UNDEFINED,
+	NUM_STENCIL_OP = UNDEFINED
 };
 
 enum class PrimitiveTopology : uint8_t
@@ -57,8 +61,10 @@ enum class PrimitiveTopology : uint8_t
 
 enum class IndexType : uint8_t
 {
-	UINT16,
-	UINT32
+	UINT16 = 0x0,
+	UINT32 = 0x1,
+	UNDEFINED,
+	NUM_INDEX_TYPE = UNDEFINED
 };
 
 enum class CullMode : uint8_t
@@ -66,20 +72,26 @@ enum class CullMode : uint8_t
 	NONE       = 0x0,
 	FRONT      = 0x1,
 	BACK       = 0x2,
-	FRONT_BACK = 0x3
+	FRONT_BACK = 0x3,
+	UNDEFINED,
+	NUM_CULL_MODE = UNDEFINED
 };
 
 enum class FrontFace : uint8_t
 {
 	COUNTER_CLOCKWISE = 0x0,
-	CLOCKWISE         = 0x1
+	CLOCKWISE         = 0x1,
+	UNDEFINED,
+	NUM_FRONT_FACE = UNDEFINED
 };
 
 enum class PolygonMode : uint8_t
 {
 	FILL  = 0x0,
 	LINE  = 0x1,
-	POINT = 0x2
+	POINT = 0x2,
+	UNDEFINED,
+	NUM_POLYGON_MODE = UNDEFINED
 };
 
 enum class LogicOp : uint8_t
@@ -99,7 +111,9 @@ enum class LogicOp : uint8_t
 	COPY_INVERTED = 0xC,
 	OR_INVERTED   = 0xD,
 	NAND          = 0xE,
-	SET           = 0xF
+	SET           = 0xF,
+	UNDEFINED,
+	NUM_LOGIC_OP = UNDEFINED
 };
 
 enum class SampleCount 
@@ -119,7 +133,9 @@ enum class BlendOp : uint8_t
 	SUBTRACT     = 0x1,
 	REV_SUBTRACT = 0x2,
 	MIN          = 0x3,
-	MAX          = 0x4
+	MAX          = 0x4,
+	UNDEFINED,
+	NUM_BLEND_OP = UNDEFINED
 };
 
 enum class BlendFactor : uint8_t
@@ -142,7 +158,9 @@ enum class BlendFactor : uint8_t
 	SRC1_COLOR               = 0xF,
 	ONE_MINUS_SRC1_COLOR     = 0x10,
 	SRC1_ALPHA               = 0x11,
-	ONE_MINUS_SRC1_ALPHA     = 0x12
+	ONE_MINUS_SRC1_ALPHA     = 0x12,
+	UNDEFINED,
+	NUM_BLEND_FACTOR = UNDEFINED
 };
 
 enum class BorderColor : uint8_t
@@ -152,7 +170,9 @@ enum class BorderColor : uint8_t
 	FLOAT_OPAQUE_BLACK      = 0x2,
 	INT_OPAQUE_BLACK        = 0x3,
 	FLOAT_OPAQUE_WHITE      = 0x4,
-	INT_OPAQUE_WHITE        = 0x5
+	INT_OPAQUE_WHITE        = 0x5,
+	UNDEFINED,
+	NUM_BORDER_COLOR = UNDEFINED
 };
 
 enum class ColorComponent : uint8_t
@@ -228,22 +248,22 @@ enum class MipmapMode : uint8_t
 
 enum class BufferUsage : uint16_t
 {
-	UNDEFINED = 0x00,
-	CPU_WRITE_ONCE = 0x01,
-	CPU_WRITE_RARE = 0x02,
+	UNDEFINED       = 0x00,
+	CPU_WRITE_ONCE  = 0x01,
+	CPU_WRITE_RARE  = 0x02,
 	CPU_WRITE_OFTEN = 0x04,
-	CPU_READ = 0x08,
-	GPU_WRITE_ONCE = 0x10,
-	GPU_WRITE_RARE = 0x20,
+	CPU_READ        = 0x08,
+	GPU_WRITE_ONCE  = 0x10,
+	GPU_WRITE_RARE  = 0x20,
 	GPU_WRITE_OFTEN = 0x40,
-	GPU_READ = 0x80,
-	CPU_STREAMING = 0x100,
-	GPU_STREAMING = 0x200,
-	BUFFER_WRITEBACK = GPU_WRITE_OFTEN | CPU_READ,
-	BUFFER_IMMUTABLE = CPU_WRITE_ONCE | GPU_READ,
+	GPU_READ        = 0x80,
+	CPU_STREAMING   = 0x100,
+	GPU_STREAMING   = 0x200,
+	BUFFER_WRITEBACK  = GPU_WRITE_OFTEN | CPU_READ,
+	BUFFER_IMMUTABLE  = CPU_WRITE_ONCE | GPU_READ,
 	RENDER_TARGET_TEX = GPU_WRITE_OFTEN | GPU_READ,
-	BUFFER_DYNAMIC = CPU_WRITE_OFTEN | GPU_READ,
-	BUFFER_DEFAULT = CPU_WRITE_RARE | GPU_READ,
+	BUFFER_DYNAMIC    = CPU_WRITE_OFTEN | GPU_READ,
+	BUFFER_DEFAULT    = CPU_WRITE_RARE | GPU_READ,
 };
 
 enum class ShaderStage : uint32_t
