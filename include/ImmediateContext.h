@@ -4,56 +4,37 @@
 #include <map>
 #include <vulkan/vulkan.h>
 
+#include "ContextVulkanImpl.h"
+
 namespace GLOV
 {
-	struct ImpCreateVulkan
-	{
-		VkPipelineLayoutCreateInfo CreateInputLayout(const InputLayout *pInputLayout)
-		{
-			VkPipelineLayoutCreateInfo info = {};
-			return info;
-		}
-		VkPipelineInputAssemblyStateCreateInfo CreatePrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
-		{
-			VkPipelineInputAssemblyStateCreateInfo info = {};
-			return info;
-		}
-		VkPipelineShaderStageCreateInfo CreateProgram(const Program* pProgram)
-		{
-			VkPipelineShaderStageCreateInfo info = {};
-			return info;
-		}
-		VkPipelineDepthStencilStateCreateInfo CreateDepthStencil(const DepthStencilStateDesc* pDepthStencil)
-		{
-			VkPipelineDepthStencilStateCreateInfo info = {};
-			return info;
-		}
-		VkPipelineColorBlendStateCreateInfo CreateColorBlend(const ColorBlendStateDesc* pBlend)
-		{
-			VkPipelineColorBlendStateCreateInfo info = {};
-			return info;
-		}
-		VkPipelineRasterizationStateCreateInfo CreateRasterizer(const RasterizationStateDesc* pRasterizer)
-		{
-			VkPipelineRasterizationStateCreateInfo info = {};
-			return info;
-		}
-		VkPipelineMultisampleStateCreateInfo CreateMultisample(const MultisampleStateDesc* pMultisample)
-		{
-			VkPipelineMultisampleStateCreateInfo info = {};
-			return info;
-		}
-
-		VkGraphicsPipelineCreateInfo CreatePipeline()
-		{
-			VkGraphicsPipelineCreateInfo info = {};
-			return info;
-		}
-	};
-
 	class ImmediateContext
 	{
 		std::map<uint32_t, VkPipeline> graphicsPipelineMap;
+		ContextVulkanImpl impl;
+
+		RasterizationStateDesc* currentRasterizationStateDesc = nullptr;
+		MultisampleStateDesc* currentMultisampleStateDesc = nullptr;
+		DepthStencilStateDesc* currentDepthStencilStateDesc = nullptr;
+		ColorBlendAttachmentStateDesc* currentColorBlendAttachmentStateDesc = nullptr;
+		ColorBlendStateDesc* currentColorBlendStateDesc = nullptr;
+		InputLayoutDesc* currentInputLayoutDesc = nullptr;
+		InputAssemblyStateDesc* currentInputAssemblyStateDesc = nullptr;
+		Program* currentProgram = nullptr;
+
+		RasterizationStateDesc* desiredRasterizationStateDesc = nullptr;
+		MultisampleStateDesc* desiredMultisampleStateDesc = nullptr;
+		DepthStencilStateDesc* desiredtDepthStencilStateDesc = nullptr;
+		ColorBlendAttachmentStateDesc* desiredColorBlendAttachmentStateDesc = nullptr;
+		ColorBlendStateDesc* desiredColorBlendStateDesc = nullptr;
+		InputLayoutDesc* desiredInputLayoutDesc = nullptr;
+		InputAssemblyStateDesc* desiredInputAssemblyStateDesc = nullptr;
+		Program* desiredProgram = nullptr;
+
+		void ResolvePipeline();
+		void ResolveDescriptor();
+
+		void BeforeDraw();
 
 	public:
 		void Begin();
@@ -89,7 +70,7 @@ namespace GLOV
 		void BindScissor(uint32_t numScissors, const Scissor* pScissors);
 		void BindScissor(uint32_t slot, const Scissor& scissor);
 
-		void BindInputLayout(const InputLayout *pInputLayout);
+		void BindInputLayout(const InputLayoutDesc *pInputLayout);
 		void BindPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable);
 		void BindProgram(const Program* pProgram);
 		void BindDepthStencil(const DepthStencilStateDesc* pDepthStencil);

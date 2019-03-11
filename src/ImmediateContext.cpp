@@ -1,8 +1,25 @@
 #include "../include/ImmediateContext.h"
-
+#include <assert.h>
 //TMP 
 #pragma warning(disable: 4100)
 using namespace GLOV;
+
+void ImmediateContext::ResolvePipeline()
+{
+
+}
+
+void ImmediateContext::ResolveDescriptor()
+{
+
+}
+
+void ImmediateContext::BeforeDraw()
+{
+	ResolvePipeline();
+	ResolveDescriptor();
+}
+
 
 void ImmediateContext::Begin()
 {
@@ -74,18 +91,22 @@ void ImmediateContext::BindIndexBuffer(const Buffer* pIndexBuffer, IndexType for
 
 void ImmediateContext::Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
 {
+	BeforeDraw();
 }
 
 void ImmediateContext::DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance)
 {
+	BeforeDraw();
 }
 
 void ImmediateContext::DrawIndirect(const Buffer* buffer, uint32_t offset, uint32_t drawCount, uint32_t stride)
 {
+	BeforeDraw();
 }
 
 void ImmediateContext::DrawIndirectCount(const Buffer* buffer, uint32_t offset, const Buffer* countBuffer, uint32_t countBufferOffset, uint32_t maxDrawCount, uint32_t stride)
 {
+	BeforeDraw();
 }
 
 void ImmediateContext::PushConstants()
@@ -108,8 +129,9 @@ void ImmediateContext::BindScissor(uint32_t slot, const Scissor& scissor)
 {
 }
 
-void ImmediateContext::BindInputLayout(const InputLayout *pInputLayout)
+void ImmediateContext::BindInputLayout(const InputLayoutDesc *pInputLayout)
 {
+	assert(pInputLayout);
 }
 
 void ImmediateContext::BindPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
@@ -118,22 +140,27 @@ void ImmediateContext::BindPrimitiveTopology(PrimitiveTopology topology, bool pr
 
 void ImmediateContext::BindProgram(const Program* pProgram)
 {
+	assert(pProgram);
 }
 
 void ImmediateContext::BindDepthStencil(const DepthStencilStateDesc* pDepthStencil)
 {
+	assert(pDepthStencil);
 }
 
 void ImmediateContext::BindColorBlend(const ColorBlendStateDesc* pBlend)
 {
+	assert(pBlend);
 }
 
 void ImmediateContext::BindRasterizer(const RasterizationStateDesc* pRasterizer)
 {
+	assert(pRasterizer);
 }
 
 void ImmediateContext::BindMultisample(const MultisampleStateDesc* pMultisample)
 {
+	assert(pMultisample);
 }
 
 void ImmediateContext::Dispatch() 

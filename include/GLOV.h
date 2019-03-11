@@ -480,7 +480,12 @@ enum class ImageBufferFormat : uint16_t
 	NUM_FORMAT_TYPE = UNDEFINED,
 };
 
-struct RasterizationStateDesc
+class GLOV_GL
+{
+	uint32_t hash;
+};
+
+struct RasterizationStateDesc : public GLOV_GL
 {
 	bool        depthClampEnable;
 	bool        rasterizerDiscardEnable;
@@ -494,7 +499,7 @@ struct RasterizationStateDesc
 	float       lineWidth;
 };
 
-struct MultisampleStateDesc
+struct MultisampleStateDesc : public GLOV_GL
 {
 	SampleCount rasterizationSamples;
 	bool        sampleShadingEnable;
@@ -504,7 +509,7 @@ struct MultisampleStateDesc
 	bool        alphaToOneEnable;
 };
 
-struct DepthStencilStateDesc
+struct DepthStencilStateDesc : public GLOV_GL
 {
 	bool      depthTestEnable;
 	bool      depthWriteEnable;
@@ -517,7 +522,7 @@ struct DepthStencilStateDesc
 	float     maxDepthBounds;
 };
 
-struct ColorBlendAttachmentStateDesc
+struct ColorBlendAttachmentStateDesc : public GLOV_GL
 {
 	bool           blendEnable;
 	BlendFactor    srcColorBlendFactor;
@@ -529,7 +534,7 @@ struct ColorBlendAttachmentStateDesc
 	ColorComponent colorWriteMask;
 };
 
-struct ColorBlendStateDesc
+struct ColorBlendStateDesc : public GLOV_GL
 {
 	bool                                 logicOpEnable;
 	LogicOp                              logicOp;
@@ -538,11 +543,15 @@ struct ColorBlendStateDesc
 	float                                blendConstants[4];
 };
 
-class InputLayout
+class InputLayoutDesc : public GLOV_GL
 {
 };
 
-class Sampler 
+class InputAssemblyStateDesc : public GLOV_GL
+{
+};
+
+class Sampler
 {
 };
 
