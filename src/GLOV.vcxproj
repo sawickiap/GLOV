@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -23,12 +23,14 @@
     <ClInclude Include="..\include\ContextVulkanImpl.h" />
     <ClInclude Include="..\include\GLOV.h" />
     <ClInclude Include="..\include\ImmediateContext.h" />
+    <ClInclude Include="..\include\SwapChain.h" />
     <ClInclude Include="vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextVulkanImpl.cpp" />
     <ClCompile Include="GLOV.cpp" />
     <ClCompile Include="ImmediateContext.cpp" />
+    <ClCompile Include="SwapChain.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

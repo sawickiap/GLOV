@@ -14,7 +14,7 @@ enum class Result
     Count
 };
 
-enum class CompareOp : uint8_t
+enum class eCompareOp : uint8_t
 {
 	NEVER    = 0x0,
 	LESS     = 0x1,
@@ -28,7 +28,7 @@ enum class CompareOp : uint8_t
 	NUM_COMPARE_OP = UNDEFINED
 };
 
-enum class StencilOp : uint8_t
+enum class eStencilOp : uint8_t
 {
 	KEEP            = 0x0,
 	ZERO            = 0x1,
@@ -42,7 +42,7 @@ enum class StencilOp : uint8_t
 	NUM_STENCIL_OP = UNDEFINED
 };
 
-enum class PrimitiveTopology : uint8_t
+enum class ePrimitiveTopology : uint8_t
 {
 	POINT_LIST               = 0x0,
 	LINE_LIST                = 0x1,
@@ -59,7 +59,7 @@ enum class PrimitiveTopology : uint8_t
 	NUM_PRIMITIVE_TYPE = UNDEFINED
 };
 
-enum class IndexType : uint8_t
+enum class eIndexType : uint8_t
 {
 	UINT16 = 0x0,
 	UINT32 = 0x1,
@@ -67,7 +67,7 @@ enum class IndexType : uint8_t
 	NUM_INDEX_TYPE = UNDEFINED
 };
 
-enum class CullMode : uint8_t
+enum class eCullMode : uint8_t
 {
 	NONE       = 0x0,
 	FRONT      = 0x1,
@@ -77,7 +77,7 @@ enum class CullMode : uint8_t
 	NUM_CULL_MODE = UNDEFINED
 };
 
-enum class FrontFace : uint8_t
+enum class eFrontFace : uint8_t
 {
 	COUNTER_CLOCKWISE = 0x0,
 	CLOCKWISE         = 0x1,
@@ -85,7 +85,7 @@ enum class FrontFace : uint8_t
 	NUM_FRONT_FACE = UNDEFINED
 };
 
-enum class PolygonMode : uint8_t
+enum class ePolygonMode : uint8_t
 {
 	FILL  = 0x0,
 	LINE  = 0x1,
@@ -94,7 +94,7 @@ enum class PolygonMode : uint8_t
 	NUM_POLYGON_MODE = UNDEFINED
 };
 
-enum class LogicOp : uint8_t
+enum class eLogicOp : uint8_t
 {
 	CLEAR         = 0x0,
 	AND           = 0x1,
@@ -116,7 +116,7 @@ enum class LogicOp : uint8_t
 	NUM_LOGIC_OP = UNDEFINED
 };
 
-enum class SampleCount 
+enum class eSampleCount 
 {
 	COUNT_1  = 0x01,
 	COUNT_2  = 0x02,
@@ -127,7 +127,7 @@ enum class SampleCount
 	COUNT_64 = 0x40
 };
 
-enum class BlendOp : uint8_t
+enum class eBlendOp : uint8_t
 {
 	ADD          = 0x0,
 	SUBTRACT     = 0x1,
@@ -138,7 +138,7 @@ enum class BlendOp : uint8_t
 	NUM_BLEND_OP = UNDEFINED
 };
 
-enum class BlendFactor : uint8_t
+enum class eBlendFactor : uint8_t
 {
 	ZERO                     = 0x0,
 	ONE                      = 0x1,
@@ -163,7 +163,7 @@ enum class BlendFactor : uint8_t
 	NUM_BLEND_FACTOR = UNDEFINED
 };
 
-enum class BorderColor : uint8_t
+enum class eBorderColor : uint8_t
 {
 	FLOAT_TRANSPARENT_BLACK = 0x0,
 	INT_TRANSPARENT_BLACK   = 0x1,
@@ -175,7 +175,7 @@ enum class BorderColor : uint8_t
 	NUM_BORDER_COLOR = UNDEFINED
 };
 
-enum class ColorComponent : uint8_t
+enum class eColorComponent : uint8_t
 {
 	R = 0x1,
 	G = 0x2,
@@ -183,7 +183,7 @@ enum class ColorComponent : uint8_t
 	A = 0x8
 };
 
-enum class VertexInputRate : uint8_t
+enum class eVertexInputRate : uint8_t
 {
 	VERTEX    = 0x0,
 	INSTANCE  = 0x1,
@@ -191,7 +191,7 @@ enum class VertexInputRate : uint8_t
 	NUM_VERTEX_INPUT_RATE = UNDEFINED
 };
 
-enum class TextureType : uint8_t
+enum class eTextureType : uint8_t
 {
 	TEXTURE_1D                   = 0x0,
 	TEXTURE_2D                   = 0x1,
@@ -208,7 +208,7 @@ enum class TextureType : uint8_t
 	NUM_TEXTURE_TYPE = TEXTURE_UNDEFINED
 };
 
-enum class WrapMode : uint8_t
+enum class eWrapMode : uint8_t
 {
 	REPEAT                 = 0x0,
 	MIRRORED_REPEAT        = 0x1,
@@ -220,7 +220,7 @@ enum class WrapMode : uint8_t
 	NUM_WRAP_MODE = UNDEFINED
 };
 
-enum class WrapCoord : uint8_t
+enum class eWrapCoord : uint8_t
 {
 	S = 0x0,
 	T = 0x1,
@@ -229,7 +229,7 @@ enum class WrapCoord : uint8_t
 	NUM_WRAP_COORD = UNDEFINED
 };
 
-enum class MinMagFilter : uint8_t
+enum class eMinMagFilter : uint8_t
 {
 	NEAREST = 0x0,
 	LINEAR  = 0x1,
@@ -237,7 +237,7 @@ enum class MinMagFilter : uint8_t
 	NUM_MINMAG_FILTER = UNDEFINED
 };
 
-enum class MipmapMode : uint8_t
+enum class eMipmapMode : uint8_t
 {
 	NONE    = 0x0,
 	NEAREST = 0x1,
@@ -246,7 +246,7 @@ enum class MipmapMode : uint8_t
 	NUM_MIPMAP_MODE = UNDEFINED
 };
 
-enum class BufferUsage : uint16_t
+enum class eBufferUsage : uint16_t
 {
 	UNDEFINED       = 0x00,
 	CPU_WRITE_ONCE  = 0x01,
@@ -266,12 +266,12 @@ enum class BufferUsage : uint16_t
 	BUFFER_DEFAULT    = CPU_WRITE_RARE | GPU_READ,
 };
 
-enum class ShaderStage : uint8_t
+enum class eShaderStage : uint8_t
 {
 	UNDEFINED    = 0x00,
 	VERTEX       = 0x01,
-	HULL         = 0x02,
-	DOMAIN       = 0x04,
+	T_CONTROL    = 0x02,
+	T_EVALUATION = 0x04,
 	GEOMETRY     = 0x08,
 	FRAGMENT     = 0x10,
 	COMPUTE      = 0x20,
@@ -279,7 +279,7 @@ enum class ShaderStage : uint8_t
 	ALL          = 0x7F
 };
 
-enum class ImageBufferFormat : uint16_t
+enum class eImageBufferFormat : uint16_t
 {
 	R3G3B2_UNORM_PACK8,
 	R4G4_UNORM_PACK8,
@@ -487,60 +487,60 @@ class GLOV_GL
 
 struct RasterizationStateDesc : public GLOV_GL
 {
-	bool        depthClampEnable;
-	bool        rasterizerDiscardEnable;
-	PolygonMode polygonMode;
-	CullMode    cullMode;
-	FrontFace   frontFace;
-	bool        depthBiasEnable;
-	float       depthBiasConstantFactor;
-	float       depthBiasClamp;
-	float       depthBiasSlopeFactor;
-	float       lineWidth;
+	bool         depthClampEnable;
+	bool         rasterizerDiscardEnable;
+	ePolygonMode polygonMode;
+	eCullMode    cullMode;
+	eFrontFace   frontFace;
+	bool         depthBiasEnable;
+	float        depthBiasConstantFactor;
+	float        depthBiasClamp;
+	float        depthBiasSlopeFactor;
+	float        lineWidth;
 };
 
 struct MultisampleStateDesc : public GLOV_GL
 {
-	SampleCount rasterizationSamples;
-	bool        sampleShadingEnable;
-	float       minSampleShading;
-	uint32_t    sampleMask;
-	bool        alphaToCoverageEnable;
-	bool        alphaToOneEnable;
+	eSampleCount rasterizationSamples;
+	bool         sampleShadingEnable;
+	float        minSampleShading;
+	uint32_t     sampleMask;
+	bool         alphaToCoverageEnable;
+	bool         alphaToOneEnable;
 };
 
 struct DepthStencilStateDesc : public GLOV_GL
 {
-	bool      depthTestEnable;
-	bool      depthWriteEnable;
-	CompareOp depthCompareOp;
-	bool      depthBoundsTestEnable;
-	bool      stencilTestEnable;
-	StencilOp front;
-	StencilOp back;
-	float     minDepthBounds;
-	float     maxDepthBounds;
+	bool       depthTestEnable;
+	bool       depthWriteEnable;
+	eCompareOp depthCompareOp;
+	bool       depthBoundsTestEnable;
+	bool       stencilTestEnable;
+	eStencilOp front;
+	eStencilOp back;
+	float      minDepthBounds;
+	float      maxDepthBounds;
 };
 
 struct ColorBlendAttachmentStateDesc : public GLOV_GL
 {
-	bool           blendEnable;
-	BlendFactor    srcColorBlendFactor;
-	BlendFactor    dstColorBlendFactor;
-	BlendOp        colorBlendOp;
-	BlendFactor    srcAlphaBlendFactor;
-	BlendFactor    dstAlphaBlendFactor;
-	BlendOp        alphaBlendOp;
-	ColorComponent colorWriteMask;
+	bool            blendEnable;
+	eBlendFactor    srcColorBlendFactor;
+	eBlendFactor    dstColorBlendFactor;
+	eBlendOp        colorBlendOp;
+	eBlendFactor    srcAlphaBlendFactor;
+	eBlendFactor    dstAlphaBlendFactor;
+	eBlendOp        alphaBlendOp;
+	eColorComponent colorWriteMask;
 };
 
 struct ColorBlendStateDesc : public GLOV_GL
 {
-	bool                                 logicOpEnable;
-	LogicOp                              logicOp;
-	uint32_t                             attachmentCount;
-	const ColorBlendAttachmentStateDesc* pAttachments;
-	float                                blendConstants[4];
+	bool                                  logicOpEnable;
+	eLogicOp                              logicOp;
+	uint32_t                              attachmentCount;
+	const ColorBlendAttachmentStateDesc*  pAttachments;
+	float                                 blendConstants[4];
 };
 
 class InputLayoutDesc : public GLOV_GL

@@ -8,8 +8,8 @@ namespace GLOV
 {
 	struct ContextVulkanImpl
 	{
-		VkPipelineLayoutCreateInfo CreateInputLayout(const InputLayout *pInputLayout;		
-		VkPipelineInputAssemblyStateCreateInfo CreatePrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable);
+		VkPipelineLayoutCreateInfo CreateInputLayout(const InputLayoutDesc *pInputLayout);
+		VkPipelineInputAssemblyStateCreateInfo CreatePrimitiveTopology(ePrimitiveTopology topology, bool primitiveRestartEnable);
 		VkPipelineShaderStageCreateInfo CreateProgram(const Program* pProgram);
 		VkPipelineDepthStencilStateCreateInfo CreateDepthStencil(const DepthStencilStateDesc* pDepthStencil);
 		VkPipelineColorBlendStateCreateInfo CreateColorBlend(const ColorBlendStateDesc* pBlend);

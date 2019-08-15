@@ -57,7 +57,7 @@ namespace GLOV
 
 		void BindVertexBuffers(uint32_t startSlot, uint32_t numBuffers, Buffer* const* ppVertexBuffers, const uint32_t* pStrides, const uint32_t* pOffsets);
 		void BindVertexBuffer(uint32_t slot, const Buffer* pVertexBuffer, uint32_t pStride, uint32_t pOffset);
-		void BindIndexBuffer(const Buffer* pIndexBuffer, IndexType format, uint32_t offset);
+		void BindIndexBuffer(const Buffer* pIndexBuffer, eIndexType format, uint32_t offset);
 		void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
 		void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t vertexOffset, uint32_t firstInstance);
 		void DrawIndirect(const Buffer* buffer, uint32_t offset, uint32_t drawCount, uint32_t stride);
@@ -71,7 +71,7 @@ namespace GLOV
 		void BindScissor(uint32_t slot, const Scissor& scissor);
 
 		void BindInputLayout(const InputLayoutDesc *pInputLayout);
-		void BindPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable);
+		void BindPrimitiveTopology(ePrimitiveTopology topology, bool primitiveRestartEnable);
 		void BindProgram(const Program* pProgram);
 		void BindDepthStencil(const DepthStencilStateDesc* pDepthStencil);
 		void BindColorBlend(const ColorBlendStateDesc* pBlend);

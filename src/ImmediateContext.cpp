@@ -85,7 +85,7 @@ void ImmediateContext::BindVertexBuffer(uint32_t slot, const Buffer* pVertexBuff
 {
 }
 
-void ImmediateContext::BindIndexBuffer(const Buffer* pIndexBuffer, IndexType format, uint32_t offset)
+void ImmediateContext::BindIndexBuffer(const Buffer* pIndexBuffer, eIndexType format, uint32_t offset)
 {
 }
 
@@ -134,7 +134,7 @@ void ImmediateContext::BindInputLayout(const InputLayoutDesc *pInputLayout)
 	assert(pInputLayout);
 }
 
-void ImmediateContext::BindPrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
+void ImmediateContext::BindPrimitiveTopology(ePrimitiveTopology topology, bool primitiveRestartEnable)
 {
 }
 

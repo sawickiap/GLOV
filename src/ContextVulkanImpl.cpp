@@ -2,12 +2,12 @@
 
 using namespace GLOV;
 
-VkPipelineLayoutCreateInfo ContextVulkanImpl::CreateInputLayout(const InputLayout *pInputLayout)
+VkPipelineLayoutCreateInfo ContextVulkanImpl::CreateInputLayout(const InputLayoutDesc *pInputLayout)
 {
 	VkPipelineLayoutCreateInfo info = {};
 	return info;
 }
-VkPipelineInputAssemblyStateCreateInfo ContextVulkanImpl::CreatePrimitiveTopology(PrimitiveTopology topology, bool primitiveRestartEnable)
+VkPipelineInputAssemblyStateCreateInfo ContextVulkanImpl::CreatePrimitiveTopology(ePrimitiveTopology topology, bool primitiveRestartEnable)
 {
 	VkPipelineInputAssemblyStateCreateInfo info = {};
 	return info;
