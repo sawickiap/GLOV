@@ -179,11 +179,21 @@ LRESULT ApplicationWin32::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
 		break;
 	}
 	case WM_ENTERSIZEMOVE:
-		//window->resizing = true;
+		window->resizing = true;
 		break;
 	case WM_EXITSIZEMOVE:
-		//window->resizing = false;
+		window->resizing = false;
 		break;
+
+	case WM_NCACTIVATE:
+	case WM_NCPAINT:
+	{
+		// Prevent title bar from being drawn after restoring a minimized undecorated window
+		if (!window->decorated)
+			return TRUE;
+		break;
+	}
+
 	default:
 	{
 		// std::cout << "handleMessage uMsg " << std::hex << uMsg << std::dec << std::endl;

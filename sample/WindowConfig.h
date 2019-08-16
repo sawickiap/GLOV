@@ -3,19 +3,20 @@
 #include <cstdint>
 #include <string>
 
-enum eWindowFlags
+enum eWindowFlags : uint32_t
 {
-	None		= 0,
-	Resizable	= 1 << 0x0,
-	Visible		= 1 << 0x1,
-	Decorated	= 1 << 0x2,
-	Focused		= 1 << 0x3,
-	Default     = Resizable | Visible | Decorated | Focused,
-	AutoIconify = 1 << 0x4,
-	Floating	= 1 << 0x5,
-	Minimized	= 1 << 0x6,
-	Maximized	= 1 << 0x7,
-	Fullscreen	= 1 << 0x8
+	None			= 0,
+	Resizable		= 1 << 0x0,
+	Visible			= 1 << 0x1,
+	Decorated		= 1 << 0x2,
+	FocusOnShow     = 1 << 0x3,
+	Default			= Resizable | Visible | Decorated | FocusOnShow,
+	AutoIconify		= 1 << 0x4,
+	Floating		= 1 << 0x5,
+	Minimized		= 1 << 0x6,
+	Maximized		= 1 << 0x7,
+	Fullscreen		= 1 << 0x8,
+	ScaleToMonitor	= 1 << 0xA,
 };
 
 struct WindowConfig

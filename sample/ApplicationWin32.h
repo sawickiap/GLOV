@@ -5,7 +5,7 @@
 #include "PlatformWin32.h"
 
 class WindowWin32;
-class WindowConfig;
+struct WindowConfig;
 
 class ApplicationWin32
 {
