@@ -19,6 +19,16 @@
     <ClInclude Include="..\include\ContextVulkanImpl.h">
       <Filter>public_include</Filter>
     </ClInclude>
+    <ClInclude Include="..\include\SwapChain.h" />
+    <ClInclude Include="..\include\Instance.h">
+      <Filter>public_include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\Device.h">
+      <Filter>public_include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\include\PhysicalDevice.h">
+      <Filter>public_include</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GLOV.cpp" />
@@ -26,5 +36,9 @@
     <ClCompile Include="ContextVulkanImpl.cpp">
       <Filter>public_include</Filter>
     </ClCompile>
+    <ClCompile Include="SwapChain.cpp" />
+    <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="Device.cpp" />
+    <ClCompile Include="PhysicalDevice.cpp" />
   </ItemGroup>
 </Project>

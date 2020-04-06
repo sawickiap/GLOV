@@ -3,14 +3,31 @@
   <ItemGroup>
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="sample.cpp" />
-    <ClCompile Include="ApplicationWin32.cpp" />
-    <ClCompile Include="WindowWin32.cpp" />
+    <ClCompile Include="Win32\ApplicationWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Win32\WindowWin32.cpp">
+      <Filter>Win32</Filter>
+    </ClCompile>
+    <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="ApplicationWin32.h" />
-    <ClInclude Include="WindowWin32.h" />
     <ClInclude Include="WindowConfig.h" />
-    <ClInclude Include="PlatformWin32.h" />
+    <ClInclude Include="Win32\ApplicationWin32.h">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Win32\WindowWin32.h">
+      <Filter>Win32</Filter>
+    </ClInclude>
+    <ClInclude Include="Window.h" />
+    <ClInclude Include="Win32\PlatformWin32.h">
+      <Filter>Win32</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Win32">
+      <UniqueIdentifier>{5c713e10-fc61-462e-a461-9da41913163d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

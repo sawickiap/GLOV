@@ -21,15 +21,21 @@
   <ItemGroup>
     <ClInclude Include="..\include\Context.h" />
     <ClInclude Include="..\include\ContextVulkanImpl.h" />
+    <ClInclude Include="..\include\Device.h" />
     <ClInclude Include="..\include\GLOV.h" />
     <ClInclude Include="..\include\ImmediateContext.h" />
+    <ClInclude Include="..\include\Instance.h" />
+    <ClInclude Include="..\include\PhysicalDevice.h" />
     <ClInclude Include="..\include\SwapChain.h" />
     <ClInclude Include="vk_mem_alloc.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ContextVulkanImpl.cpp" />
+    <ClCompile Include="Device.cpp" />
     <ClCompile Include="GLOV.cpp" />
     <ClCompile Include="ImmediateContext.cpp" />
+    <ClCompile Include="Instance.cpp" />
+    <ClCompile Include="PhysicalDevice.cpp" />
     <ClCompile Include="SwapChain.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -114,7 +120,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <FloatingPointModel>Fast</FloatingPointModel>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalIncludeDirectories>$(VULKAN_SDK)/Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
