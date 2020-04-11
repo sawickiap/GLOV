@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "../include/GLOV.h"
 
-#include "Win32/ApplicationWin32.h"
+#include "Win32/PlatformWin32.h"
 #include "WindowConfig.h"
 
 int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
@@ -15,7 +15,7 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
 
     //GLOV::DestroyInstance(instance);
 
-	ApplicationWin32 app(hInstance);
+	PlatformWin32 app(hInstance);
 	app.createConsole();
 	WindowConfig hints;
 	hints.width = 600;

@@ -4,20 +4,20 @@
 #include "..\Window.h"
 #include "PlatformWin32.h"
 
-class ApplicationWin32;
+class PlatformWin32;
 
 class WindowWin32 : public Window
 {
-	friend class ApplicationWin32;
+	friend class PlatformWin32;
 
-	const ApplicationWin32&		mApp;
+	const PlatformWin32&		mPlatform;
 	HWND						mHandle;
 	HICON						mBigIcon;
 	HICON						mSmallIcon;
 	DWORD						mStyle;
 	DWORD						mExStyle;
 public:
-	WindowWin32(const ApplicationWin32& app, WindowConfig config);
+	WindowWin32(const PlatformWin32& platform, WindowConfig config);
 	WindowWin32(const WindowWin32&) = delete;
 	~WindowWin32();
 

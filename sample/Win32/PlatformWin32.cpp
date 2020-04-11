@@ -1,23 +1,23 @@
 #include "..\\pch.h"
-#include "ApplicationWin32.h"
+#include "PlatformWin32.h"
 #include "WindowWin32.h"
 #include <algorithm>
 #ifdef _DEBUG
 #include <iostream>
 #endif
 
-ApplicationWin32* ApplicationWin32::Get = nullptr;
+PlatformWin32* PlatformWin32::Get = nullptr;
 
-ApplicationWin32::ApplicationWin32(HINSTANCE hInstance)
+PlatformWin32::PlatformWin32(HINSTANCE hInstance)
 	: mInstance(hInstance)
 	, mRunning(true)
 	, mPaused(false)
 	, mWindows()
 {
-	ApplicationWin32::Get = this;
+	PlatformWin32::Get = this;
 }
 
-bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
+bool PlatformWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
 	_UNUSED(hPrevInstance);
 	_UNUSED(pCmdLine);
@@ -26,7 +26,7 @@ bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdSho
 	ZeroMemory(&wndClassEx, sizeof(wndClassEx));
 	wndClassEx.cbSize = sizeof(wndClassEx);
 	wndClassEx.style = CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
-	wndClassEx.lpfnWndProc = (WNDPROC)ApplicationWin32::windowProc;
+	wndClassEx.lpfnWndProc = (WNDPROC)PlatformWin32::windowProc;
 	wndClassEx.cbClsExtra = 0;
 	wndClassEx.cbWndExtra = sizeof(void*) + sizeof(int);
 	wndClassEx.hInstance = mInstance;
@@ -44,18 +44,18 @@ bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdSho
 	return true;
 }
 
-bool ApplicationWin32::createWindow(const WindowConfig& hints)
+bool PlatformWin32::createWindow(const WindowConfig& hints)
 {
 	auto window = mWindows.emplace_back(std::make_shared<WindowWin32>(*this, hints));
 	return window->create();
 }
 
-void ApplicationWin32::terminate()
+void PlatformWin32::terminate()
 {
 	UnregisterClass(_WNDCLASSNAME, GetModuleHandleW(NULL));
 }
 
-void ApplicationWin32::run()
+void PlatformWin32::run()
 {
 	while (mRunning)
 	{
@@ -73,7 +73,7 @@ void ApplicationWin32::run()
 	}
 }
 
-void ApplicationWin32::createConsole()
+void PlatformWin32::createConsole()
 {
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
@@ -84,12 +84,12 @@ void ApplicationWin32::createConsole()
 	err = freopen_s(&newStderr, "CONOUT$", "wt", stderr);
 }
 
-void ApplicationWin32::deleteConsole()
+void PlatformWin32::deleteConsole()
 {
 	FreeConsole();
 }
 
-bool ApplicationWin32::handleEvents()
+bool PlatformWin32::handleEvents()
 {
 	MSG msg;
 	while (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -100,18 +100,18 @@ bool ApplicationWin32::handleEvents()
 	return true;
 }
 
-LRESULT CALLBACK ApplicationWin32::windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK PlatformWin32::windowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	LRESULT retVal = 0;
-	if (ApplicationWin32::Get)
+	if (PlatformWin32::Get)
 	{
-		retVal = ApplicationWin32::Get->handleMessage(hWnd, uMsg, wParam, lParam);
+		retVal = PlatformWin32::Get->handleMessage(hWnd, uMsg, wParam, lParam);
 		return retVal;
 	}
 	return DefWindowProc(hWnd, uMsg, wParam, lParam);
 }
 
-LRESULT ApplicationWin32::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT PlatformWin32::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 #ifdef _DEBUG
 	{
@@ -248,7 +248,7 @@ LRESULT ApplicationWin32::handleMessage(HWND hwnd, UINT uMsg, WPARAM wParam, LPA
 	}
 }
 
-void ApplicationWin32::setupConsole(std::string title)
+void PlatformWin32::setupConsole(std::string title)
 {
 	AllocConsole();
 	AttachConsole(GetCurrentProcessId());
@@ -258,7 +258,7 @@ void ApplicationWin32::setupConsole(std::string title)
 	SetConsoleTitle(TEXT(title.c_str()));
 }
 
-void ApplicationWin32::setupDPIAwareness()
+void PlatformWin32::setupDPIAwareness()
 {
 	typedef HRESULT *(__stdcall *SetProcessDpiAwarenessFunc)(PROCESS_DPI_AWARENESS);
 	HMODULE shCore = LoadLibraryA("Shcore.dll");

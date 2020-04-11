@@ -11,10 +11,10 @@ Window::Window(WindowConfig config)
 	, mHeightBorder(0u)
 	, mWidthWithBorder(config.width)
 	, mHeightWithBorder(config.height)
-	, mBitsFlag(0u)
+	, mAllBits(0u)
 {
-	visibleFlag = (config.windowFlags & eWindowFlags::Visible) != 0;
-	focusedFlag = (config.windowFlags & eWindowFlags::FocusOnShow) != 0;
-	decoratedFlag = (config.windowFlags & eWindowFlags::Decorated) != 0;
-	closedFlag = false;
+	mFlag.visible = (config.windowFlags & eWindowFlags::Visible) != 0;
+	mFlag.focused = (config.windowFlags & eWindowFlags::FocusOnShow) != 0;
+	mFlag.decorated = (config.windowFlags & eWindowFlags::Decorated) != 0;
+	mFlag.closed = false;
 }

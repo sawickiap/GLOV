@@ -1,11 +1,11 @@
 #include "..\\pch.h"
 #include "WindowWin32.h"
-#include "ApplicationWin32.h"
+#include "PlatformWin32.h"
 #include "..\WindowConfig.h"
 
-WindowWin32::WindowWin32(const ApplicationWin32& app, WindowConfig windowConfig)
+WindowWin32::WindowWin32(const PlatformWin32& platform, WindowConfig windowConfig)
 	: Window(windowConfig)
-	, mApp(app)
+	, mPlatform(platform)
 	, mHandle(NULL)
 	, mBigIcon(NULL)
 	, mSmallIcon(NULL)
@@ -64,17 +64,17 @@ bool WindowWin32::create()
 	const CHAR* title = mTitle.c_str();
 	mHandle = CreateWindowEx(mExStyle, _WNDCLASSNAME, title, mStyle, 
 		mWindowPosX, mWindowPosY, mWidthWithBorder, mHeightWithBorder,
-		NULL, NULL, mApp.getInstance(), this);
+		NULL, NULL, mPlatform.getInstance(), this);
 	if (mHandle == NULL)
 	{
 		//std::cerr << "Win32: Failed to create window \n";
 		return false;
 	}
 	SetProp(mHandle, _PROPWIN, this);
-	if (visibleFlag)
+	if (mFlag.visible)
 	{
 		show();
-		if (focusedFlag)
+		if (mFlag.focused)
 		{
 			focus();
 		}
@@ -85,22 +85,22 @@ bool WindowWin32::create()
 void WindowWin32::minimize()
 {
 	ShowWindow(mHandle, SW_MINIMIZE);
-	minimalizedFlag = true;
-	maximalizedFlag = false;
+	mFlag.minimalized = true;
+	mFlag.maximalized = false;
 }
 
 void WindowWin32::restore()
 {
 	ShowWindow(mHandle, SW_RESTORE);
-	minimalizedFlag = false;
-	maximalizedFlag = false;
+	mFlag.minimalized = false;
+	mFlag.maximalized = false;
 }
 
 void WindowWin32::maximize()
 {
 	ShowWindow(mHandle, SW_MAXIMIZE);
-	maximalizedFlag = true;
-	minimalizedFlag = false;
+	mFlag.maximalized = true;
+	mFlag.minimalized = false;
 }
 
 void WindowWin32::show()
@@ -126,17 +126,17 @@ void WindowWin32::focus()
 DWORD WindowWin32::internalWindowStyle() const
 {
 	DWORD style = WS_CLIPSIBLINGS | WS_CLIPCHILDREN;
-	if (fullscreenFlag)
+	if (mFlag.fullscreen)
 	{
 		style |= WS_POPUP;
 	}
 	else
 	{
 		style |= WS_SYSMENU | WS_MINIMIZEBOX;
-		if (decoratedFlag)
+		if (mFlag.decorated)
 		{
 			style |= WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
-			if (resizableFlag)
+			if (mFlag.resizable)
 			{
 				style |= WS_THICKFRAME | WS_MAXIMIZEBOX;
 			}
@@ -144,21 +144,21 @@ DWORD WindowWin32::internalWindowStyle() const
 		else
 		{
 			style |= WS_POPUP;
-			if (resizableFlag)
+			if (mFlag.resizable)
 			{
 				style |= WS_THICKFRAME;
 			}
 		}
 	}
-	if (maximalizedFlag)
+	if (mFlag.maximalized)
 	{
 		style |= WS_MAXIMIZE;
 	}
-	if (minimalizedFlag)
+	if (mFlag.minimalized)
 	{
 		style |= WS_MINIMIZE;
 	}
-	if (visibleFlag)
+	if (mFlag.visible)
 	{
 		style |= WS_VISIBLE;
 	}
@@ -173,7 +173,7 @@ DWORD WindowWin32::internalWindowExStyle() const
 	//WS_EX_WINDOWEDGE
 	//WS_EX_ACCEPTFILES
 	DWORD style = WS_EX_APPWINDOW;
-	if (fullscreenFlag || floatingFlag)
+	if (mFlag.fullscreen || mFlag.floating)
 	{
 		style |= WS_EX_TOPMOST;
 	}

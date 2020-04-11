@@ -21,19 +21,19 @@ protected:
 	uint32_t	mHeightWithBorder;
 	union
 	{
-		struct
+		struct Flag
 		{
-			mutable uint32_t closedFlag			: 1;
-			mutable uint32_t visibleFlag		: 1;
-			mutable uint32_t maximalizedFlag	: 1;
-			mutable uint32_t minimalizedFlag	: 1;
-			mutable uint32_t fullscreenFlag		: 1;
-			mutable uint32_t focusedFlag		: 1;
-			mutable uint32_t decoratedFlag		: 1;
-			mutable uint32_t resizableFlag		: 1;
-			mutable uint32_t floatingFlag		: 1;
-		};
-		mutable uint32_t mBitsFlag;
+			mutable uint32_t closed			: 1;
+			mutable uint32_t visible		: 1;
+			mutable uint32_t maximalized	: 1;
+			mutable uint32_t minimalized	: 1;
+			mutable uint32_t fullscreen		: 1;
+			mutable uint32_t focused		: 1;
+			mutable uint32_t decorated		: 1;
+			mutable uint32_t resizable		: 1;
+			mutable uint32_t floating		: 1;
+		} mFlag;
+		mutable uint32_t mAllBits;
 	};
 public:
 	Window() = default;
@@ -49,7 +49,7 @@ public:
 
 	bool isClosed() const
 	{
-		return closedFlag != 0;
+		return mFlag.closed != 0;
 	}
 
 	std::pair<uint32_t, uint32_t> getWindowSize() const
