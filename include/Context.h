@@ -28,7 +28,6 @@ namespace GLOV
 			static_cast<T*>(this)->End();
 		}
 
-
 		void SetUniformBuffers(uint32_t startSlot,uint32_t numBuffers,Buffer* const *ppBuffers)
 		{
 			static_cast<T*>(this)->SetUniformBuffers(startSlot, numBuffers, ppBuffers);

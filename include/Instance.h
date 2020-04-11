@@ -16,14 +16,14 @@ namespace GLOV
 		uint32_t	mApplicationVersion;
 		std::string	mEngineName;
 		uint32_t	mEngineVersion;
-		bool mEnableValidationLayer;
+		bool		mEnableValidationLayer;
 	};
 
 	struct DeviceDesc
 	{
-		HINSTANCE hinstance;
-		HWND hwnd;
-		uint32_t physicalDeviceIndex;
+		HINSTANCE	hinstance;
+		HWND		hwnd;
+		uint32_t	physicalDeviceIndex;
 	};
 
 	struct QueueFamilyIndices

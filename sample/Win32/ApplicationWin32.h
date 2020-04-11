@@ -27,7 +27,8 @@ public:
 		return mInstance;
 	}
 		
-	bool init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow, WindowConfig hints);
+	bool init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow);
+	bool createWindow(const WindowConfig& hints);
 	void terminate();
 	void run();
 

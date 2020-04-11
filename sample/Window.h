@@ -23,16 +23,15 @@ protected:
 	{
 		struct
 		{
-			mutable uint32_t closedFlag		: 1;
-			mutable uint32_t visibleFlag	: 1;
+			mutable uint32_t closedFlag			: 1;
+			mutable uint32_t visibleFlag		: 1;
 			mutable uint32_t maximalizedFlag	: 1;
 			mutable uint32_t minimalizedFlag	: 1;
-			mutable uint32_t fullscreenFlag : 1;
-			mutable uint32_t focusedFlag	: 1;
-			mutable uint32_t decoratedFlag	: 1;
-			mutable uint32_t resizableFlag	: 1;
-			mutable uint32_t floatingFlag	: 1;			
-			//mutable uint32_t unusedBits : 26;
+			mutable uint32_t fullscreenFlag		: 1;
+			mutable uint32_t focusedFlag		: 1;
+			mutable uint32_t decoratedFlag		: 1;
+			mutable uint32_t resizableFlag		: 1;
+			mutable uint32_t floatingFlag		: 1;
 		};
 		mutable uint32_t mBitsFlag;
 	};

@@ -81,4 +81,5 @@ Result PhysicalDevice::Init(VkPhysicalDevice desc)
 	{
 		vkGetPhysicalDeviceFeatures(mPhysicalDevice, &mFeatures);
 	}
+	return Result::Success;
 }

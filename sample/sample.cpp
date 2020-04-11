@@ -23,7 +23,8 @@ int CALLBACK WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR pCmdLin
 	hints.title = "Test";
 	//hints.windowFlags = (eWindowFlags)(eWindowFlags::Visible | eWindowFlags::FocusOnShow);
 	//hints.windowFlags = ;
-	app.init(hPrevInstance, pCmdLine, nCmdShow, hints);
+	app.init(hPrevInstance, pCmdLine, nCmdShow);
+	app.createWindow(hints);
 	app.run();
 	app.terminate();
 	app.deleteConsole();

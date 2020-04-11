@@ -4349,7 +4349,7 @@ private:
     union Item
     {
         uint32_t NextFreeIndex;
-        alignas(T) char Value[sizeof(T)];
+        char Value[sizeof(T)];
     };
 
     struct ItemBlock

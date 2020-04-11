@@ -17,7 +17,7 @@ ApplicationWin32::ApplicationWin32(HINSTANCE hInstance)
 	ApplicationWin32::Get = this;
 }
 
-bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow, WindowConfig hints)
+bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 {
 	_UNUSED(hPrevInstance);
 	_UNUSED(pCmdLine);
@@ -41,9 +41,13 @@ bool ApplicationWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdSho
 		//Error( PLATFORM_ERROR, "Win32: Failed to register window class" );
 		return false;
 	}
-	auto win = mWindows.emplace_back(std::make_shared<WindowWin32>(*this, hints));
-	win->create();
 	return true;
+}
+
+bool ApplicationWin32::createWindow(const WindowConfig& hints)
+{
+	auto window = mWindows.emplace_back(std::make_shared<WindowWin32>(*this, hints));
+	return window->create();
 }
 
 void ApplicationWin32::terminate()
