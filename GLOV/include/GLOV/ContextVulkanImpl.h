@@ -1,8 +1,8 @@
 #pragma once
 
-#include "GLOV.h"
+#include <GLOV/GLOV.h>
+#include <GLOV/GLOV_VK.h>
 #include <map>
-#include <vulkan/vulkan.h>
 
 namespace GLOV
 {

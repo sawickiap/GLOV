@@ -1,26 +1,27 @@
 cmake_minimum_required (VERSION 2.8.11)
 project (GLOV)
 
-SET( MAIN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/include" )
+SET( MAIN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/include/GLOV" )
 foreach(DNAME ${MAIN_FILES})
 	file(GLOB FOUND_SOURCES ${DNAME}/*.cpp ${DNAME}/*.c ${DNAME}/*.hpp ${DNAME}/*.h ${DNAME}/*.inl)
-	list(APPEND MathInclude_SOURCES ${FOUND_SOURCES})
+	list(APPEND GLOV_INCLUDES ${FOUND_SOURCES})
 endforeach()
 	SET(TARGET_NAME GLOV)
-	SOURCE_GROUP( GLOV FILES ${MathInclude_SOURCES} )
+	SOURCE_GROUP( GLOV FILES ${GLOV_INCLUDES} )
 SET( MAIN_FILES "${CMAKE_CURRENT_SOURCE_DIR}/src" )
 foreach(DNAME ${MAIN_FILES})
 	file(GLOB FOUND_SOURCES ${DNAME}/*.cpp ${DNAME}/*.c ${DNAME}/*.hpp ${DNAME}/*.h ${DNAME}/*.inl)
-	list(APPEND MathSrc_SOURCES ${FOUND_SOURCES})
+	list(APPEND GLOV_SOURCES ${FOUND_SOURCES})
 endforeach()
 	SET(TARGET_NAME GLOV)
-	SOURCE_GROUP( GLOV FILES ${MathSrc_SOURCES} )
+	SOURCE_GROUP( GLOV FILES ${GLOV_SOURCES} )
 
 add_library (GLOV
-${MathInclude_SOURCES} 
-${MathSrc_SOURCES})
+${GLOV_INCLUDES} 
+${GLOV_SOURCES})
 
-INCLUDE_DIRECTORIES(${Vulkan_INCLUDE_DIRS})
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
+include_directories(${Vulkan_INCLUDE_DIRS})
 target_compile_definitions(${PROJECT_NAME} PRIVATE VK_USE_PLATFORM_WIN32_KHR)
 target_link_libraries (${PROJECT_NAME} ${Vulkan_LIBRARIES})
 

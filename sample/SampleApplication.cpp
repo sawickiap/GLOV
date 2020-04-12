@@ -1,4 +1,6 @@
 #include "SampleApplication.h"
+#include <Win32/PlatformWin32.h>
+#include <Win32/WindowWin32.h>
 
 using namespace GLOV;
 
@@ -6,12 +8,20 @@ SampleApplication::SampleApplication()
 {
 }
 
-bool SampleApplication::init()
+bool SampleApplication::init(PlatformWin32* platform)
 {
-	mInstance.Init(InstanceDesc());
+	InstanceDesc instanceDesc;
+	instanceDesc.mEnableValidationLayer = true;
+	mInstance.Init(instanceDesc);
 
-	ResultPair<Device*> result = mInstance.CreateDevice(DeviceDesc());
+	DeviceDesc deviceDesc;
+	deviceDesc.hinstance = platform->getInstance();
+	deviceDesc.hwnd = platform->getWindow(0)->getHandle();
+	deviceDesc.physicalDeviceIndex = 0u;
+
+	ResultPair<Device*> result = mInstance.CreateDevice(deviceDesc);
 	mDevice = result.second;
+	//Result tmp = mInstance.CreateSurfaceWin32(deviceDesc);
 	mImmediateContext = mDevice->CreateImmediateContext().second;
 	//;
 	//HRESULT hr = D3D11CreateDevice(
@@ -55,5 +65,4 @@ void SampleApplication::deinit()
 
 void SampleApplication::tick()
 {
-
 }

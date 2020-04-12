@@ -1,5 +1,6 @@
 #include "PlatformWin32.h"
 #include "WindowWin32.h"
+#include "Application.h"
 #include <algorithm>
 #ifdef _DEBUG
 #include <iostream>
@@ -11,9 +12,20 @@ PlatformWin32::PlatformWin32(HINSTANCE hInstance)
 	: mInstance(hInstance)
 	, mRunning(true)
 	, mPaused(false)
+	, mApplication(nullptr)
 	, mWindows()
 {
 	PlatformWin32::Get = this;
+}
+
+HINSTANCE PlatformWin32::getInstance() const
+{
+	return mInstance;
+}
+
+const WindowWin32* PlatformWin32::getWindow(size_t i) const
+{
+	return static_cast<WindowWin32*>(mWindows[i].get());
 }
 
 bool PlatformWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
@@ -43,10 +55,21 @@ bool PlatformWin32::init(HINSTANCE hPrevInstance, LPSTR pCmdLine, int nCmdShow)
 	return true;
 }
 
+void PlatformWin32::setupApplication(Application* app)
+{
+	mApplication = app;
+}
+
 bool PlatformWin32::createWindow(const WindowConfig& hints)
 {
-	auto window = mWindows.emplace_back(std::make_shared<WindowWin32>(*this, hints));
+	std::shared_ptr<Window> window = mWindows.emplace_back(std::make_shared<WindowWin32>(*this, hints));
 	return window->create();
+}
+
+bool PlatformWin32::createContex(size_t windowIndex)
+{
+	
+	return false;
 }
 
 void PlatformWin32::terminate()
@@ -56,12 +79,14 @@ void PlatformWin32::terminate()
 
 void PlatformWin32::run()
 {
+	mApplication->init(this);
 	while (mRunning)
 	{
 		if (!handleEvents())
 		{
 			break;
 		}
+		mApplication->tick();
 		for (const auto& it : mWindows)
 		{
 			if (it->isClosed())
@@ -70,6 +95,7 @@ void PlatformWin32::run()
 			}
 		}
 	}
+	mApplication->deinit();
 }
 
 void PlatformWin32::createConsole()

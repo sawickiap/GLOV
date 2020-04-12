@@ -1,5 +1,5 @@
-#include "../include/Instance.h"
-#include "../include/PhysicalDevice.h"
+#include <GLOV/Instance.h>
+#include <GLOV/PhysicalDevice.h>
 #include <vector>
 #include <iostream>
 #include <assert.h>
@@ -9,7 +9,7 @@
 using namespace GLOV;
 
 Instance::Instance()
-	: m_VkInstance(VK_NULL_HANDLE)
+	: mVkInstance(VK_NULL_HANDLE)
 	, mDebugReportCallback(VK_NULL_HANDLE)
 {
 }
@@ -18,11 +18,11 @@ Instance::~Instance()
 {
 	if (mDebugReportCallback != VK_NULL_HANDLE)
 	{
-		vkDestroyDebugReportCallbackEXT(m_VkInstance, mDebugReportCallback, nullptr);
+		vkDestroyDebugReportCallbackEXT(mVkInstance, mDebugReportCallback, nullptr);
 	}
-	if (m_VkInstance != VK_NULL_HANDLE)
+	if (mVkInstance != VK_NULL_HANDLE)
 	{
-		vkDestroyInstance(m_VkInstance, nullptr);
+		vkDestroyInstance(mVkInstance, nullptr);
 	}
 }
 
@@ -44,6 +44,8 @@ Result Instance::Init(InstanceDesc desc)
 	{
 		instanceLayers.push_back("VK_LAYER_LUNARG_standard_validation");
 		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+		instanceExtensions.push_back(VK_EXT_DEBUG_REPORT_EXTENSION_NAME);
+		//instanceExtensions.push_back(VK_EXT_DEBUG_MARKER_EXTENSION_NAME);
 	}
 
 	VkInstanceCreateInfo instInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
@@ -53,30 +55,34 @@ Result Instance::Init(InstanceDesc desc)
 	instInfo.enabledLayerCount = static_cast<uint32_t>(instanceLayers.size());
 	instInfo.ppEnabledLayerNames = instanceLayers.data();
 
-	VkResult vkResult = vkCreateInstance(&instInfo, NULL, &m_VkInstance);
+	VkResult vkResult = vkCreateInstance(&instInfo, NULL, &mVkInstance);
 	if (vkResult != VK_SUCCESS)
 	{
 		return VkResultToResult(vkResult);
 	}
 	uint32_t physicalDeviceCount;
-	vkResult = vkEnumeratePhysicalDevices(m_VkInstance, &physicalDeviceCount, nullptr);
+	vkResult = vkEnumeratePhysicalDevices(mVkInstance, &physicalDeviceCount, nullptr);
 	if (vkResult != VK_SUCCESS)
 	{
 		return VkResultToResult(vkResult);
 	}
 	std::vector<VkPhysicalDevice> tmpPhysicalDevices(physicalDeviceCount);
 	mPhysicalDevices.reserve(physicalDeviceCount);
-	vkResult = vkEnumeratePhysicalDevices(m_VkInstance, &physicalDeviceCount, tmpPhysicalDevices.data());
+	vkResult = vkEnumeratePhysicalDevices(mVkInstance, &physicalDeviceCount, tmpPhysicalDevices.data());
 	for (VkPhysicalDevice vkPhysicalDevice : tmpPhysicalDevices)
 	{
-		PhysicalDevice* physicalDevice = mPhysicalDevices.emplace_back().get();
+		PhysicalDevice* physicalDevice = mPhysicalDevices.emplace_back(std::make_unique<PhysicalDevice>()).get();
 		physicalDevice->Init(vkPhysicalDevice);
 	}
 	if (vkResult != VK_SUCCESS)
 	{
 		return VkResultToResult(vkResult);
 	}
-
+	vkCreateDebugReportCallbackEXT = PFN_vkCreateDebugReportCallbackEXT(vkGetInstanceProcAddr(mVkInstance, "vkCreateDebugReportCallbackEXT"));
+	vkCreateDebugUtilsMessengerEXT = PFN_vkCreateDebugUtilsMessengerEXT(vkGetInstanceProcAddr(mVkInstance, "vkCreateDebugUtilsMessengerEXT"));
+	vkDebugReportMessageEXT = PFN_vkDebugReportMessageEXT(vkGetInstanceProcAddr(mVkInstance, "vkDebugReportMessageEXT"));
+	vkDestroyDebugReportCallbackEXT = PFN_vkDestroyDebugReportCallbackEXT(vkGetInstanceProcAddr(mVkInstance, "vkDestroyDebugReportCallbackEXT"));
+	vkDestroyDebugUtilsMessengerEXT = PFN_vkDestroyDebugUtilsMessengerEXT(vkGetInstanceProcAddr(mVkInstance, "vkDestroyDebugUtilsMessengerEXT"));
 	if (desc.mEnableValidationLayer)
 	{
 		VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo;
@@ -89,25 +95,91 @@ Result Instance::Init(InstanceDesc desc)
 												VK_DEBUG_REPORT_DEBUG_BIT_EXT;
 		debugReportCallbackCreateInfo.pfnCallback = Instance::debugCallback;
 		debugReportCallbackCreateInfo.pUserData = nullptr;
-		vkResult = vkCreateDebugReportCallbackEXT(m_VkInstance, &debugReportCallbackCreateInfo, nullptr, &mDebugReportCallback);
+		vkResult = vkCreateDebugReportCallbackEXT(mVkInstance, &debugReportCallbackCreateInfo, nullptr, &mDebugReportCallback);
 		if (vkResult != VK_SUCCESS)
 		{
 			return VkResultToResult(vkResult);
 		}
 	}
-
-	vkCreateDebugReportCallbackEXT = PFN_vkCreateDebugReportCallbackEXT(vkGetInstanceProcAddr(m_VkInstance, "vkCreateDebugReportCallbackEXT"));
-	vkCreateDebugUtilsMessengerEXT = PFN_vkCreateDebugUtilsMessengerEXT(vkGetInstanceProcAddr(m_VkInstance, "vkCreateDebugUtilsMessengerEXT"));
-	vkDebugReportMessageEXT = PFN_vkDebugReportMessageEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDebugReportMessageEXT"));
-	vkDestroyDebugReportCallbackEXT = PFN_vkDestroyDebugReportCallbackEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDestroyDebugReportCallbackEXT"));
-	vkDestroyDebugUtilsMessengerEXT = PFN_vkDestroyDebugUtilsMessengerEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDestroyDebugUtilsMessengerEXT"));
 	return Result::Success;
 }
 
 ResultPair<Device*> Instance::CreateDevice(DeviceDesc desc)
 {
-	_UNUSED(desc);
-	return { Result::VulkanError, nullptr };
+	VkResult vkResult = VK_SUCCESS;
+	VkSurfaceKHR surface;
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
+	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
+	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
+	surfaceCreateInfo.hinstance = desc.hinstance;
+	surfaceCreateInfo.hwnd = desc.hwnd;
+	vkResult = vkCreateWin32SurfaceKHR(mVkInstance, &surfaceCreateInfo, nullptr, &surface);
+#endif
+	if (vkResult != VK_SUCCESS)
+	{
+		return { Result::VulkanError, nullptr };
+	}
+	VkPhysicalDevice physicalDevice = mPhysicalDevices[desc.physicalDeviceIndex]->GetPhysicalDevice();
+	uint32_t queueCount;
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, NULL);
+	assert(queueCount >= 1);
+	std::vector<VkQueueFamilyProperties> queueProps(queueCount);
+	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, queueProps.data());
+	std::vector<VkBool32> supportsPresent(queueCount);
+	for (uint32_t i = 0; i < queueCount; i++)
+	{
+		vkGetPhysicalDeviceSurfaceSupportKHR(physicalDevice, i, surface, &supportsPresent[i]);
+	}
+	uint32_t graphicsQueueNodeIndex = UINT32_MAX;
+	uint32_t presentQueueNodeIndex = UINT32_MAX;
+	for (uint32_t i = 0; i < queueCount; i++)
+	{
+		if ((queueProps[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) != 0)
+		{
+			if (graphicsQueueNodeIndex == UINT32_MAX)
+			{
+				graphicsQueueNodeIndex = i;
+			}
+
+			if (supportsPresent[i] == VK_TRUE)
+			{
+				graphicsQueueNodeIndex = i;
+				presentQueueNodeIndex = i;
+				break;
+			}
+		}
+	}
+	if (presentQueueNodeIndex == UINT32_MAX)
+	{
+		for (uint32_t i = 0; i < queueCount; ++i)
+		{
+			if (supportsPresent[i] == VK_TRUE)
+			{
+				presentQueueNodeIndex = i;
+				break;
+			}
+		}
+	}
+	if (graphicsQueueNodeIndex == UINT32_MAX || presentQueueNodeIndex == UINT32_MAX)
+	{
+		return { Result::VulkanError, nullptr };
+	}
+	if (graphicsQueueNodeIndex != presentQueueNodeIndex)
+	{
+		return { Result::VulkanError, nullptr };
+	}
+	uint32_t queueNodeIndex = graphicsQueueNodeIndex;
+	uint32_t formatCount;
+	vkResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, NULL);
+	assert(formatCount > 0);
+	std::vector<VkSurfaceFormatKHR> surfaceFormats(formatCount);
+	vkResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, surface, &formatCount, surfaceFormats.data());
+	if (graphicsQueueNodeIndex != presentQueueNodeIndex)
+	{
+		return { Result::VulkanError, nullptr };
+	}
+	auto device = mCreatedDevices.emplace_back(std::make_shared<Device>());
+	return { Result::Success, device.get() };
 }
 
 Result Instance::CreateSurfaceWin32(DeviceDesc desc)
@@ -120,7 +192,7 @@ Result Instance::CreateSurfaceWin32(DeviceDesc desc)
 	surfaceCreateInfo.hwnd = desc.hwnd;
 
 	VkSurfaceKHR mSurface;
-	VkResult vkResult = vkCreateWin32SurfaceKHR(m_VkInstance, &surfaceCreateInfo, nullptr, &mSurface);
+	VkResult vkResult = vkCreateWin32SurfaceKHR(mVkInstance, &surfaceCreateInfo, nullptr, &mSurface);
 	if (vkResult != VK_SUCCESS)
 	{
 		return VkResultToResult(vkResult);

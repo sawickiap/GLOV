@@ -1,13 +1,8 @@
 #pragma once
 
-#include "GLOV.h"
-#ifdef _WIN32
-#ifndef VK_USE_PLATFORM_WIN32_KHR
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif
-#include <windows.h>
-#endif //  _WIN32
-#include <vulkan/vulkan.h>
+#include <GLOV/GLOV.h>
+#include <GLOV/GLOV_VK.h>
+#include <GLOV/Device.h>
 #include <vector>
 #include <string>
 
@@ -24,8 +19,10 @@ namespace GLOV
 
 	struct DeviceDesc
 	{
+#if defined(VK_USE_PLATFORM_WIN32_KHR)
 		HINSTANCE	hinstance;
 		HWND		hwnd;
+#endif
 		uint32_t	physicalDeviceIndex;
 	};
 
@@ -41,11 +38,13 @@ namespace GLOV
 	};
 
 	class PhysicalDevice;
+	class Device;
 
 	class Instance
 	{
-		VkInstance m_VkInstance;
+		VkInstance mVkInstance;
 		std::vector<std::unique_ptr<PhysicalDevice>> mPhysicalDevices;
+		std::vector<std::shared_ptr<Device>> mCreatedDevices;
 
 		VkDebugReportCallbackEXT mDebugReportCallback;
 

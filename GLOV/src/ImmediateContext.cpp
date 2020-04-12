@@ -1,6 +1,5 @@
-#include "../include/ImmediateContext.h"
-#include "../include/Device.h"
-#include <assert.h>
+#include <GLOV/ImmediateContext.h>
+#include <GLOV/Device.h>
 //TMP 
 #pragma warning(disable: 4100)
 using namespace GLOV;

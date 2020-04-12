@@ -1,5 +1,4 @@
-#include "../include/PhysicalDevice.h"
-#include <cassert>
+#include <GLOV/PhysicalDevice.h>
 
 using namespace GLOV;
 

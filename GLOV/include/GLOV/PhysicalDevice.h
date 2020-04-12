@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Instance.h"
+#include <GLOV/Instance.h>
 
 namespace GLOV
 {
@@ -23,9 +23,11 @@ namespace GLOV
 	public:
 		PhysicalDevice();
 		PhysicalDevice(PhysicalDevice&) = delete;
-		//~PhysicalDevice();
+		~PhysicalDevice() = default;
 
 		Result Init(VkPhysicalDevice desc);
+
+		VkPhysicalDevice GetPhysicalDevice() const { return mPhysicalDevice; }
 	};
 
 }

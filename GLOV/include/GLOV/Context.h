@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GLOV.h"
+#include <GLOV/GLOV.h>
 
 namespace GLOV
 {

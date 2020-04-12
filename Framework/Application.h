@@ -1,5 +1,7 @@
 #pragma once
 
+class PlatformWin32;
+
 class Application
 {
 	bool mRunning;
@@ -8,7 +10,7 @@ class Application
 public:
 	Application();
 
-	virtual bool init() = 0;
+	virtual bool init(PlatformWin32* platfor) = 0;
 	virtual void deinit() = 0;
 	virtual void tick() = 0;
 };

@@ -1,12 +1,9 @@
 #pragma once
 
-#include "GLOV.h"
-#include <windows.h>
+#include <GLOV/GLOV.h>
+#include <GLOV/GLOV_VK.h>
 #include <vector>
 #include <array>
-#include <cassert>
-#define VK_USE_PLATFORM_WIN32_KHR
-#include <vulkan/vulkan.h>
 
 namespace GLOV
 {
@@ -60,7 +57,7 @@ namespace GLOV
 		uint32_t queueNodeIndex = UINT32_MAX;
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-		void initSurface(void* platformHandle, void* platformWindow)
+		void initSurface(HINSTANCE platformHandle, HWND platformWindow)
 #elif defined(VK_USE_PLATFORM_ANDROID_KHR)
 		void initSurface(ANativeWindow* window)
 #elif defined(VK_USE_PLATFORM_WAYLAND_KHR)
@@ -77,8 +74,8 @@ namespace GLOV
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
 			VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
 			surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-			surfaceCreateInfo.hinstance = (HINSTANCE)platformHandle;
-			surfaceCreateInfo.hwnd = (HWND)platformWindow;
+			surfaceCreateInfo.hinstance = platformHandle;
+			surfaceCreateInfo.hwnd = platformWindow;
 			vkResult = vkCreateWin32SurfaceKHR(instance, &surfaceCreateInfo, nullptr, &surface);
 #elif defined(VK_USE_PLATFORM_ANDROID_KHR)
 			VkAndroidSurfaceCreateInfoKHR surfaceCreateInfo = {};

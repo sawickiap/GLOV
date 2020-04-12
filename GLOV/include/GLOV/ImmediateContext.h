@@ -1,10 +1,8 @@
 #pragma once
 
-#include "GLOV.h"
+#include <GLOV/GLOV.h>
+#include <GLOV/ContextVulkanImpl.h>
 #include <map>
-#include <vulkan/vulkan.h>
-
-#include "ContextVulkanImpl.h"
 
 namespace GLOV
 {
