@@ -1,5 +1,4 @@
-#include "pch.h"
-#include "../include/GLOV.h"
+#include <GLOV.h>
 
 #include "Win32/PlatformWin32.h"
 #include "WindowConfig.h"

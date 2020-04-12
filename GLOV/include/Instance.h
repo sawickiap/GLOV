@@ -2,7 +2,9 @@
 
 #include "GLOV.h"
 #ifdef _WIN32
+#ifndef VK_USE_PLATFORM_WIN32_KHR
 #define VK_USE_PLATFORM_WIN32_KHR
+#endif
 #include <windows.h>
 #endif //  _WIN32
 #include <vulkan/vulkan.h>

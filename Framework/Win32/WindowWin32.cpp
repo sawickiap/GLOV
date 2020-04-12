@@ -1,4 +1,3 @@
-#include "..\\pch.h"
 #include "WindowWin32.h"
 #include "PlatformWin32.h"
 #include "..\WindowConfig.h"

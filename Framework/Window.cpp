@@ -1,4 +1,3 @@
-#include "pch.h"
 #include "Window.h"
 
 Window::Window(WindowConfig config)
