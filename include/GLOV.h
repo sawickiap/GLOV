@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <utility>
 
 namespace GLOV
 {
@@ -13,6 +14,8 @@ enum class Result
     // TODO...
     Count
 };
+
+template<typename T> using ResultPair = std::pair<Result, T>;
 
 enum class eCompareOp : uint8_t
 {

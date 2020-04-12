@@ -43,7 +43,7 @@ Result Instance::Init(InstanceDesc desc)
 	if (desc.mEnableValidationLayer)
 	{
 		instanceLayers.push_back("VK_LAYER_LUNARG_standard_validation");
-		instanceExtensions.push_back("VK_EXT_debug_report");
+		instanceExtensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
 	}
 
 	VkInstanceCreateInfo instInfo = { VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO };
@@ -95,14 +95,19 @@ Result Instance::Init(InstanceDesc desc)
 			return VkResultToResult(vkResult);
 		}
 	}
+
+	vkCreateDebugReportCallbackEXT = PFN_vkCreateDebugReportCallbackEXT(vkGetInstanceProcAddr(m_VkInstance, "vkCreateDebugReportCallbackEXT"));
+	vkCreateDebugUtilsMessengerEXT = PFN_vkCreateDebugUtilsMessengerEXT(vkGetInstanceProcAddr(m_VkInstance, "vkCreateDebugUtilsMessengerEXT"));
+	vkDebugReportMessageEXT = PFN_vkDebugReportMessageEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDebugReportMessageEXT"));
+	vkDestroyDebugReportCallbackEXT = PFN_vkDestroyDebugReportCallbackEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDestroyDebugReportCallbackEXT"));
+	vkDestroyDebugUtilsMessengerEXT = PFN_vkDestroyDebugUtilsMessengerEXT(vkGetInstanceProcAddr(m_VkInstance, "vkDestroyDebugUtilsMessengerEXT"));
 	return Result::Success;
 }
 
-Result Instance::CreateDevice(DeviceDesc desc, Device*& device)
+ResultPair<Device*> Instance::CreateDevice(DeviceDesc desc)
 {
 	_UNUSED(desc);
-	_UNUSED(device);
-	return Result::VulkanError;
+	return { Result::VulkanError, nullptr };
 }
 
 Result Instance::CreateSurfaceWin32(DeviceDesc desc)

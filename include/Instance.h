@@ -3,6 +3,7 @@
 #include "GLOV.h"
 #ifdef _WIN32
 #define VK_USE_PLATFORM_WIN32_KHR
+#include <windows.h>
 #endif //  _WIN32
 #include <vulkan/vulkan.h>
 #include <vector>
@@ -53,12 +54,18 @@ namespace GLOV
 
 		Result Init(InstanceDesc desc);
 
-		Result CreateDevice(DeviceDesc desc, Device*& device);
+		ResultPair<Device*> CreateDevice(DeviceDesc desc);
 
 	private:
 
 		Result CreateSurfaceWin32(DeviceDesc desc);
 
+		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT = nullptr;
+		PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = nullptr;
+		
+		PFN_vkDebugReportMessageEXT vkDebugReportMessageEXT = 0;
+		PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallbackEXT = 0;
+		PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT = 0;
 
 		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char* layerPrefix, const char* msg, void* userData);
 	};

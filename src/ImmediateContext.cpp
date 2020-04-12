@@ -1,4 +1,5 @@
 #include "../include/ImmediateContext.h"
+#include "../include/Device.h"
 #include <assert.h>
 //TMP 
 #pragma warning(disable: 4100)

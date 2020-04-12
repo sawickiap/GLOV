@@ -4,6 +4,7 @@
 
 namespace GLOV
 {
+	class ImmediateContext;
 
 	class Device
 	{
@@ -11,6 +12,9 @@ namespace GLOV
 	public:
 		Device();
 		Device(const Device&) = delete;
+
+		ResultPair<ImmediateContext*> CreateImmediateContext();
+
 	private:
 		VkDevice mDevice;
 		//QueueFamilyIndices mQueueFamilyIndices;

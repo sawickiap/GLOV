@@ -8,8 +8,11 @@
 
 namespace GLOV
 {
+	class Device;
+
 	class ImmediateContext
 	{
+		Device* mDevice;
 		std::map<uint32_t, VkPipeline> graphicsPipelineMap;
 		ContextVulkanImpl impl;
 
