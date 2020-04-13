@@ -32,12 +32,6 @@ namespace GLOV
 		//} DXGI_SAMPLE_DESC;
 	};
 
-	struct SwapChainBuffer
-	{
-		VkImage image;
-		VkImageView view;
-	};
-
 	class Instance;
 	class Device;
 	class PhysicalDevice;
@@ -53,13 +47,16 @@ namespace GLOV
 		std::vector<VkSurfaceFormatKHR> mSurfaceFormats;
 		VkSwapchainKHR mSwapChain = VK_NULL_HANDLE;
 
+		VkCommandPool mCommandPool;
+		std::vector<VkCommandBuffer> mCommandBuffers;
+
+		std::vector<VkFence> mWaitFences;
 	public:
 		
-		uint32_t imageCount;
-		std::vector<VkImage> images;
-		std::vector<VkImageView> views;
-		std::vector<SwapChainBuffer> buffers;
-		uint32_t queueNodeIndex = UINT32_MAX;
+		uint32_t mImageCount;
+		std::vector<VkImage> mImages;
+		std::vector<VkImageView> mImageViews;
+		uint32_t mPresentQueueIndex = UINT32_MAX;
 
 		Result create(uint32_t& width, uint32_t& height, bool vsync = false);
 		VkResult acquireNextImage(VkSemaphore presentCompleteSemaphore, uint32_t *imageIndex);

@@ -93,64 +93,65 @@ Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
 			break;
 		};
 	}
-	VkSwapchainCreateInfoKHR swapchainCI = {};
-	swapchainCI.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	swapchainCI.pNext = NULL;
-	swapchainCI.surface = mSurface;
-	swapchainCI.minImageCount = desiredNumberOfSwapchainImages;
-	swapchainCI.imageFormat = mSurfaceFormats.front().format;
-	swapchainCI.imageColorSpace = mSurfaceFormats.front().colorSpace;
-	swapchainCI.imageExtent = { swapchainExtent.width, swapchainExtent.height };
-	swapchainCI.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
-	swapchainCI.preTransform = (VkSurfaceTransformFlagBitsKHR)preTransform;
-	swapchainCI.imageArrayLayers = 1;
-	swapchainCI.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-	swapchainCI.queueFamilyIndexCount = 0;
-	swapchainCI.pQueueFamilyIndices = nullptr;
-	swapchainCI.presentMode = swapchainPresentMode;
-	swapchainCI.oldSwapchain = oldSwapchain;
-	swapchainCI.clipped = VK_TRUE;
-	swapchainCI.compositeAlpha = compositeAlpha;
+	VkSwapchainCreateInfoKHR swapchainCreateInfo = {};
+	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
+	swapchainCreateInfo.pNext = NULL;
+	swapchainCreateInfo.surface = mSurface;
+	swapchainCreateInfo.minImageCount = desiredNumberOfSwapchainImages;
+	swapchainCreateInfo.imageFormat = mSurfaceFormats.front().format;
+	swapchainCreateInfo.imageColorSpace = mSurfaceFormats.front().colorSpace;
+	swapchainCreateInfo.imageExtent = { swapchainExtent.width, swapchainExtent.height };
+	swapchainCreateInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+	swapchainCreateInfo.preTransform = (VkSurfaceTransformFlagBitsKHR)preTransform;
+	swapchainCreateInfo.imageArrayLayers = 1;
+	swapchainCreateInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+	swapchainCreateInfo.queueFamilyIndexCount = 0;
+	swapchainCreateInfo.pQueueFamilyIndices = nullptr;
+	swapchainCreateInfo.presentMode = swapchainPresentMode;
+	swapchainCreateInfo.oldSwapchain = oldSwapchain;
+	swapchainCreateInfo.clipped = VK_TRUE;
+	swapchainCreateInfo.compositeAlpha = compositeAlpha;
 	if (surfCaps.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_SRC_BIT)
 	{
-		swapchainCI.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
+		swapchainCreateInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 	}
 	if (surfCaps.supportedUsageFlags & VK_IMAGE_USAGE_TRANSFER_DST_BIT)
 	{
-		swapchainCI.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+		swapchainCreateInfo.imageUsage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 	}
-	vkResult = vkCreateSwapchainKHR(mDevice->getDevice(), &swapchainCI, nullptr, &mSwapChain);
+	vkResult = vkCreateSwapchainKHR(mDevice->getDevice(), &swapchainCreateInfo, nullptr, &mSwapChain);
 	if (vkResult)
 	{
 		return Result::VulkanError;
 	}
 	if (oldSwapchain != VK_NULL_HANDLE)
 	{
-		for (uint32_t i = 0; i < imageCount; i++)
+		for (uint32_t i = 0; i < mImageCount; i++)
 		{
-			vkDestroyImageView(mDevice->getDevice(), buffers[i].view, nullptr);
+			vkDestroyImageView(mDevice->getDevice(), mImageViews[i], nullptr);
 		}
 		vkDestroySwapchainKHR(mDevice->getDevice(), oldSwapchain, nullptr);
 	}
-	vkResult = vkGetSwapchainImagesKHR(mDevice->getDevice(), mSwapChain, &imageCount, nullptr);
+	vkResult = vkGetSwapchainImagesKHR(mDevice->getDevice(), mSwapChain, &mImageCount, nullptr);
 	if (vkResult)
 	{
 		return Result::VulkanError;
 	}
-	images.resize(imageCount);
-	vkResult = vkGetSwapchainImagesKHR(mDevice->getDevice(), mSwapChain, &imageCount, images.data());
+	mImages.resize(mImageCount);
+	mImageViews.resize(mImageCount);
+	vkResult = vkGetSwapchainImagesKHR(mDevice->getDevice(), mSwapChain, &mImageCount, mImages.data());
 	if (vkResult)
 	{
 		return Result::VulkanError;
 	}
-	buffers.resize(imageCount);
-	for (uint32_t i = 0; i < imageCount; i++)
+	for (uint32_t i = 0; i < mImageCount; i++)
 	{
 		VkImageViewCreateInfo colorAttachmentView = {};
 		colorAttachmentView.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
 		colorAttachmentView.pNext = nullptr;
 		colorAttachmentView.format = mSurfaceFormats.front().format;
-		colorAttachmentView.components = {
+		colorAttachmentView.components =
+		{
 			VK_COMPONENT_SWIZZLE_R,
 			VK_COMPONENT_SWIZZLE_G,
 			VK_COMPONENT_SWIZZLE_B,
@@ -163,18 +164,50 @@ Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
 		colorAttachmentView.subresourceRange.layerCount = 1;
 		colorAttachmentView.viewType = VK_IMAGE_VIEW_TYPE_2D;
 		colorAttachmentView.flags = 0;
-
-		buffers[i].image = images[i];
-
-		colorAttachmentView.image = buffers[i].image;
-
-		vkResult = vkCreateImageView(mDevice->getDevice(), &colorAttachmentView, nullptr, &buffers[i].view);
+		colorAttachmentView.image = mImages[i];
+		vkResult = vkCreateImageView(mDevice->getDevice(), &colorAttachmentView, nullptr, &mImageViews[i]);
 		if (vkResult)
 		{
 			return Result::VulkanError;
 		}
-		return Result::Success;
+		break;
 	}
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	VkCommandPoolCreateInfo commandPoolCreateInfo = {};
+	commandPoolCreateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
+	commandPoolCreateInfo.queueFamilyIndex = mPresentQueueIndex;
+	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
+	vkResult = vkCreateCommandPool(mDevice->getDevice(), &commandPoolCreateInfo, nullptr, &mCommandPool);
+	if (vkResult)
+	{
+		return Result::VulkanError;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	mCommandBuffers.resize(mImageCount);
+	VkCommandBufferAllocateInfo commandBufferAllocateInfo{};
+	commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+	commandBufferAllocateInfo.commandPool = mCommandPool;
+	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+	commandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(mCommandBuffers.size());
+	vkResult = vkAllocateCommandBuffers(mDevice->getDevice(), &commandBufferAllocateInfo, mCommandBuffers.data());
+	if (vkResult)
+	{
+		return Result::VulkanError;
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	VkFenceCreateInfo fenceCreateInfo{};
+	fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+	fenceCreateInfo.flags = VK_FENCE_CREATE_SIGNALED_BIT;
+	mWaitFences.resize(mCommandBuffers.size());
+	for (VkFence& fence : mWaitFences)
+	{
+		vkResult = vkCreateFence(mDevice->getDevice(), &fenceCreateInfo, nullptr, &fence);
+		if (vkResult)
+		{
+			return Result::VulkanError;
+		}
+	}
+	return Result::Success;
 }
 
 VkResult SwapChain::acquireNextImage(VkSemaphore presentCompleteSemaphore, uint32_t *imageIndex)
@@ -190,7 +223,6 @@ VkResult SwapChain::queuePresent(VkQueue queue, uint32_t imageIndex, VkSemaphore
 	presentInfo.swapchainCount = 1;
 	presentInfo.pSwapchains = &mSwapChain;
 	presentInfo.pImageIndices = &imageIndex;
-	// Check if a wait semaphore has been specified to wait for before presenting the image
 	if (waitSemaphore != VK_NULL_HANDLE)
 	{
 		presentInfo.pWaitSemaphores = &waitSemaphore;
@@ -203,9 +235,9 @@ void SwapChain::cleanup()
 {
 	if (mSwapChain != VK_NULL_HANDLE)
 	{
-		for (uint32_t i = 0; i < imageCount; i++)
+		for (uint32_t i = 0; i < mImageCount; i++)
 		{
-			vkDestroyImageView(mDevice->getDevice(), buffers[i].view, nullptr);
+			vkDestroyImageView(mDevice->getDevice(), mImageViews[i], nullptr);
 		}
 	}
 	if (mSurface != VK_NULL_HANDLE)
@@ -216,3 +248,24 @@ void SwapChain::cleanup()
 	mSurface = VK_NULL_HANDLE;
 	mSwapChain = VK_NULL_HANDLE;
 }
+
+
+//VK_CHECK_RESULT(swapChain.acquireNextImage(presentCompleteSemaphore, &currentBuffer));
+//VK_CHECK_RESULT(vkWaitForFences(device, 1, &waitFences[currentBuffer], VK_TRUE, UINT64_MAX));
+//VK_CHECK_RESULT(vkResetFences(device, 1, &waitFences[currentBuffer]));
+//VkPipelineStageFlags waitStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+//VkSubmitInfo submitInfo = {};
+//submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+//submitInfo.pWaitDstStageMask = &waitStageMask;               // Pointer to the list of pipeline stages that the semaphore waits will occur at
+//submitInfo.pWaitSemaphores = &presentCompleteSemaphore;      // Semaphore(s) to wait upon before the submitted command buffer starts executing
+//submitInfo.waitSemaphoreCount = 1;                           // One wait semaphore
+//submitInfo.pSignalSemaphores = &renderCompleteSemaphore;     // Semaphore(s) to be signaled when command buffers have completed
+//submitInfo.signalSemaphoreCount = 1;                         // One signal semaphore
+//submitInfo.pCommandBuffers = &drawCmdBuffers[currentBuffer]; // Command buffers(s) to execute in this batch (submission)
+//submitInfo.commandBufferCount = 1;                           // One command buffer
+//VK_CHECK_RESULT(vkQueueSubmit(queue, 1, &submitInfo, waitFences[currentBuffer]));
+//VkResult present = swapChain.queuePresent(queue, currentBuffer, renderCompleteSemaphore);
+//if (!((present == VK_SUCCESS) || (present == VK_SUBOPTIMAL_KHR)))
+//{
+//	VK_CHECK_RESULT(present);
+//}

@@ -293,7 +293,7 @@ ResultPair<SwapChain*> Instance::createSwapChain(DeviceDesc desc)
 	{
 		return { VkResultToResult(vkResult), {} };
 	}
-	uint32_t queueNodeIndex = graphicsQueueNodeIndex;
+	swapChain.mPresentQueueIndex = graphicsQueueNodeIndex;
 	uint32_t formatCount;
 	vkResult = vkGetPhysicalDeviceSurfaceFormatsKHR(physicalDevice, swapChain.mSurface, &formatCount, NULL);
 	assert(formatCount > 0);
