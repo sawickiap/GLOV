@@ -52,6 +52,14 @@ public:
 		return mFlag.closed != 0;
 	}
 
+	uint32_t getWindowWidth() const
+	{
+		return mWidthWindow;
+	}
+	uint32_t getWindowHeight() const
+	{
+		return mHeightWindow;
+	}
 	std::pair<uint32_t, uint32_t> getWindowSize() const
 	{
 		return { mWidthWindow, mHeightWindow };

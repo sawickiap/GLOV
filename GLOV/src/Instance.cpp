@@ -37,6 +37,9 @@ Result Instance::init(InstanceDesc desc)
 #if defined(_WIN32)
 	instanceExtensions.push_back(VK_KHR_WIN32_SURFACE_EXTENSION_NAME);
 #endif
+	instanceExtensions.push_back(VK_KHR_GET_SURFACE_CAPABILITIES_2_EXTENSION_NAME);
+	instanceExtensions.push_back(VK_NV_EXTERNAL_MEMORY_CAPABILITIES_EXTENSION_NAME);
+
 	for (const std::string& extension : desc.mExtraInstanceExtensions)
 	{
 		instanceExtensions.push_back(extension.c_str());
@@ -91,7 +94,7 @@ Result Instance::init(InstanceDesc desc)
 	vkResult = vkEnumeratePhysicalDevices(mInstance, &physicalDeviceCount, tmpPhysicalDevices.data());
 	for (VkPhysicalDevice vkPhysicalDevice : tmpPhysicalDevices)
 	{
-		PhysicalDevice* physicalDevice = mPhysicalDevices.emplace_back(std::make_unique<PhysicalDevice>()).get();
+		PhysicalDevice* physicalDevice = mPhysicalDevices.emplace_back(std::make_shared<PhysicalDevice>()).get();
 		physicalDevice->init(vkPhysicalDevice);
 	}
 	if (vkResult != VK_SUCCESS)
@@ -111,14 +114,14 @@ Result Instance::init(InstanceDesc desc)
 	return Result::Success;
 }
 
-ResultPair<Device*> Instance::createDevice(DeviceDesc desc)
+ResultPair<Device*> Instance::createDevice(const DeviceDesc& devDesc)
 {
 	VkResult vkResult;
 	Device device;
-	device.mPhysicalDevice = mPhysicalDevices[desc.physicalDeviceIndex].get();	
+	device.mPhysicalDevice = mPhysicalDevices[devDesc.physicalDeviceIndex].get();
 	std::vector<VkDeviceQueueCreateInfo> queueCreateInfos{};
 	const float defaultQueuePriority = 0.0f;
-	if (desc.queueTypeFlag & VK_QUEUE_GRAPHICS_BIT)
+	if (devDesc.queueTypeFlag & VK_QUEUE_GRAPHICS_BIT)
 	{
 		device.mGraphicsQueueIndex = device.mPhysicalDevice->getQueueFamilyIndex(VK_QUEUE_GRAPHICS_BIT);
 		VkDeviceQueueCreateInfo queueInfo{};
@@ -132,7 +135,7 @@ ResultPair<Device*> Instance::createDevice(DeviceDesc desc)
 	{
 		device.mGraphicsQueueIndex = VK_NULL_HANDLE;
 	}
-	if (desc.queueTypeFlag & VK_QUEUE_COMPUTE_BIT)
+	if (devDesc.queueTypeFlag & VK_QUEUE_COMPUTE_BIT)
 	{
 		device.mComputeQueueIndex = device.mPhysicalDevice->getQueueFamilyIndex(VK_QUEUE_COMPUTE_BIT);
 		if (device.mComputeQueueIndex != device.mGraphicsQueueIndex)
@@ -149,7 +152,7 @@ ResultPair<Device*> Instance::createDevice(DeviceDesc desc)
 	{
 		device.mComputeQueueIndex = device.mGraphicsQueueIndex;
 	}
-	if (desc.queueTypeFlag & VK_QUEUE_TRANSFER_BIT)
+	if (devDesc.queueTypeFlag & VK_QUEUE_TRANSFER_BIT)
 	{
 		device.mTransferQueueIndex = device.mPhysicalDevice->getQueueFamilyIndex(VK_QUEUE_TRANSFER_BIT);
 		if ((device.mTransferQueueIndex != device.mGraphicsQueueIndex) &&
@@ -169,6 +172,15 @@ ResultPair<Device*> Instance::createDevice(DeviceDesc desc)
 	}
 	bool useSwapChain = true;
 	std::vector<const char*> deviceExtensions = device.mPhysicalDevice->mDeviceExtensions;
+	auto new_end = std::remove_if(deviceExtensions.begin(), deviceExtensions.end(),
+		[](const char* name)
+	{
+		return std::strstr(name, "_NV_") != nullptr ||
+			std::strstr(name, "_NVX_") != nullptr ||
+			std::strstr(name, "_AMD_") != nullptr;
+	});
+	deviceExtensions.erase(new_end, deviceExtensions.end());
+
 	VkPhysicalDeviceFeatures enabledFeatures = device.mPhysicalDevice->mFeatures;
 	void* pNextChain = nullptr;
 	if (useSwapChain)
@@ -225,26 +237,27 @@ ResultPair<Device*> Instance::createDevice(DeviceDesc desc)
 
 	mCreatedDevices.emplace_back(device);
 	return { VkResultToResult(vkResult), &mCreatedDevices.back() };
-
-	//auto surface = CreateSurfaceWin32(desc);
 }
 
-ResultPair<SwapChain*> Instance::createSwapChain(DeviceDesc desc)
+ResultPair<SwapChain*> Instance::createSwapChain(const SwapChainDesc& swapDesc, const DeviceDesc& devDesc)
 {
 	VkResult vkResult;
 	SwapChain swapChain;
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
 	VkWin32SurfaceCreateInfoKHR surfaceCreateInfo = {};
 	surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_WIN32_SURFACE_CREATE_INFO_KHR;
-	surfaceCreateInfo.hinstance = desc.hinstance;
-	surfaceCreateInfo.hwnd = desc.hwnd;
+	surfaceCreateInfo.hinstance = swapDesc.hinstance;
+	surfaceCreateInfo.hwnd = swapDesc.hwnd;
 	vkResult = vkCreateWin32SurfaceKHR(mInstance, &surfaceCreateInfo, nullptr, &swapChain.mSurface);
 #endif
 	if (vkResult != VK_SUCCESS)
 	{
 		return { VkResultToResult(vkResult), {} };
 	}
-	VkPhysicalDevice physicalDevice = mPhysicalDevices[desc.physicalDeviceIndex]->getPhysicalDevice();
+	swapChain.mInstance = this;
+	swapChain.mPhysicalDevice = mPhysicalDevices[devDesc.physicalDeviceIndex].get();
+	swapChain.mDevice = &mCreatedDevices.back();
+	VkPhysicalDevice physicalDevice = swapChain.mPhysicalDevice->getPhysicalDevice();
 	uint32_t queueCount;
 	vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueCount, NULL);
 	assert(queueCount >= 1);
@@ -319,6 +332,7 @@ ResultPair<SwapChain*> Instance::createSwapChain(DeviceDesc desc)
 			std::iter_swap(swapChain.mSurfaceFormats.begin(), it);
 		}
 	}
+	swapChain.create(swapDesc);
 	mCreatedSwapChain.emplace_back(swapChain);
 	return { VkResultToResult(vkResult), &mCreatedSwapChain.back() };
 }

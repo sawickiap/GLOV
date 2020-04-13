@@ -18,6 +18,10 @@ namespace GLOV
 		ResultPair<ImmediateContext*> CreateImmediateContext();
 
 		VkDevice getDevice() const { return mDevice; }
+		VkQueue getQueue() const { return mQueue; }
+		VkSemaphore getPresentComplete() const { return mPresentComplete; }
+		VkSemaphore getRenderComplete() const { return mRenderComplete; }
+		VkSubmitInfo getSubmitInfo() const { return mSubmitInfo; }
 
 	private:
 		VkInstance mInstance;

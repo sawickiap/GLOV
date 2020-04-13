@@ -5,7 +5,7 @@
 
 using namespace GLOV;
 
-Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
+Result SwapChain::create(const SwapChainDesc& swapDesc)
 {
 	VkResult vkResult = VK_SUCCESS;
 	VkSwapchainKHR oldSwapchain = mSwapChain;
@@ -29,41 +29,37 @@ Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
 		return Result::VulkanError;
 	}
 	VkExtent2D swapchainExtent = {};
-	if (surfCaps.currentExtent.width == (uint32_t)-1)
-	{
-		swapchainExtent.width = width;
-		swapchainExtent.height = height;
-	}
-	else
-	{
-		swapchainExtent = surfCaps.currentExtent;
-		width = surfCaps.currentExtent.width;
-		height = surfCaps.currentExtent.height;
-	}
+	swapchainExtent.width = swapDesc.width;
+	swapchainExtent.height = swapDesc.height;
+	//if (surfCaps.currentExtent.width == (uint32_t)-1)
+	//{
+	//	swapchainExtent.width = width;
+	//	swapchainExtent.height = height;
+	//}
+	//else
+	//{
+	//	swapchainExtent = surfCaps.currentExtent;
+	//	width = surfCaps.currentExtent.width;
+	//	height = surfCaps.currentExtent.height;
+	//}
 
-	// Select a present mode for the swapchain
-
-	// The VK_PRESENT_MODE_FIFO_KHR mode must always be present as per spec
-	// This mode waits for the vertical blank ("v-sync")
 	VkPresentModeKHR swapchainPresentMode = VK_PRESENT_MODE_FIFO_KHR;
 
-	// If v-sync is not requested, try to find a mailbox mode
-	// It's the lowest latency non-tearing present mode available
-	if (!vsync)
-	{
-		for (size_t i = 0; i < presentModeCount; i++)
-		{
-			if (presentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
-			{
-				swapchainPresentMode = VK_PRESENT_MODE_MAILBOX_KHR;
-				break;
-			}
-			if ((swapchainPresentMode != VK_PRESENT_MODE_MAILBOX_KHR) && (presentModes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR))
-			{
-				swapchainPresentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
-			}
-		}
-	}
+	//if (!vsync)
+	//{
+	//	for (size_t i = 0; i < presentModeCount; i++)
+	//	{
+	//		if (presentModes[i] == VK_PRESENT_MODE_MAILBOX_KHR)
+	//		{
+	//			swapchainPresentMode = VK_PRESENT_MODE_MAILBOX_KHR;
+	//			break;
+	//		}
+	//		if ((swapchainPresentMode != VK_PRESENT_MODE_MAILBOX_KHR) && (presentModes[i] == VK_PRESENT_MODE_IMMEDIATE_KHR))
+	//		{
+	//			swapchainPresentMode = VK_PRESENT_MODE_IMMEDIATE_KHR;
+	//		}
+	//	}
+	//}
 	uint32_t desiredNumberOfSwapchainImages = surfCaps.minImageCount + 1;
 	if ((surfCaps.maxImageCount > 0) && (desiredNumberOfSwapchainImages > surfCaps.maxImageCount))
 	{
@@ -79,7 +75,8 @@ Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
 		preTransform = surfCaps.currentTransform;
 	}
 	VkCompositeAlphaFlagBitsKHR compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;
-	std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags = {
+	std::array<VkCompositeAlphaFlagBitsKHR, 4> compositeAlphaFlags =
+	{
 		VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR,
 		VK_COMPOSITE_ALPHA_PRE_MULTIPLIED_BIT_KHR,
 		VK_COMPOSITE_ALPHA_POST_MULTIPLIED_BIT_KHR,
@@ -95,7 +92,7 @@ Result SwapChain::create(uint32_t& width, uint32_t& height, bool vsync)
 	}
 	VkSwapchainCreateInfoKHR swapchainCreateInfo = {};
 	swapchainCreateInfo.sType = VK_STRUCTURE_TYPE_SWAPCHAIN_CREATE_INFO_KHR;
-	swapchainCreateInfo.pNext = NULL;
+	swapchainCreateInfo.pNext = nullptr;
 	swapchainCreateInfo.surface = mSurface;
 	swapchainCreateInfo.minImageCount = desiredNumberOfSwapchainImages;
 	swapchainCreateInfo.imageFormat = mSurfaceFormats.front().format;
@@ -249,6 +246,38 @@ void SwapChain::cleanup()
 	mSwapChain = VK_NULL_HANDLE;
 }
 
+Result SwapChain::prepareFrame()
+{
+	VkResult vkResult = acquireNextImage(mDevice->getPresentComplete(), &currentBuffer);
+	if ((vkResult == VK_ERROR_OUT_OF_DATE_KHR) || (vkResult == VK_SUBOPTIMAL_KHR))
+	{
+//		windowResize();
+		return Result::Success;
+	}
+	else
+	{
+		return VkResultToResult(vkResult);
+	}
+}
+
+Result SwapChain::submitFrame()
+{
+	VkResult vkResult = queuePresent(mDevice->getQueue(), currentBuffer, mDevice->getRenderComplete());
+	if (!((vkResult == VK_SUCCESS) || (vkResult == VK_SUBOPTIMAL_KHR)))
+	{
+		if (vkResult == VK_ERROR_OUT_OF_DATE_KHR)
+		{
+			//windowResize();
+			return Result::Success;
+		}
+		else
+		{
+			return VkResultToResult(vkResult);
+		}
+	}
+	vkResult = vkQueueWaitIdle(mDevice->getQueue());
+	return VkResultToResult(vkResult);
+}
 
 //VK_CHECK_RESULT(swapChain.acquireNextImage(presentCompleteSemaphore, &currentBuffer));
 //VK_CHECK_RESULT(vkWaitForFences(device, 1, &waitFences[currentBuffer], VK_TRUE, UINT64_MAX));

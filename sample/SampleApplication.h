@@ -17,7 +17,8 @@ public:
 	PlatformWin32* mPlatform;
 
 	GLOV::Instance mInstance;
-	GLOV::ImmediateContext* mImmediateContext;
-	GLOV::Device* mDevice;
+	GLOV::ImmediateContext* mImmediateContext = nullptr;
+	GLOV::Device* mDevice = nullptr;
+	GLOV::SwapChain* mSwapChain = nullptr;
 };
 

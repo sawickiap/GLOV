@@ -16,6 +16,7 @@ enum class Result
 };
 
 template<typename T> using ResultPair = std::pair<Result, T>;
+template<typename T, typename U> using ResultTriple = std::tuple<Result, T, U>;
 
 enum class eCompareOp : uint8_t
 {

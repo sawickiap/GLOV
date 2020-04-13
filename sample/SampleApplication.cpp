@@ -10,51 +10,30 @@ SampleApplication::SampleApplication()
 
 bool SampleApplication::init(PlatformWin32* platform)
 {
+	const WindowWin32* window = platform->getWindow(0);
+
 	InstanceDesc instanceDesc;
 	instanceDesc.mEnableValidationLayer = true;
 	mInstance.init(instanceDesc);
 
 	DeviceDesc deviceDesc;
-	deviceDesc.hinstance = platform->getInstance();
-	deviceDesc.hwnd = platform->getWindow(0)->getHandle();
 	deviceDesc.physicalDeviceIndex = 0u;
+	deviceDesc.queueTypeFlag = QUEUE_GRAPHICS;
 
-	ResultPair<Device*> result = mInstance.createDevice(deviceDesc);
-	mDevice = result.second;
-	//Result tmp = mInstance.CreateSurfaceWin32(deviceDesc);
-	mImmediateContext = mDevice->CreateImmediateContext().second;
-	//;
-	//HRESULT hr = D3D11CreateDevice(
-	//	0,                 // default adapter
-	//	md3dDriverType,
-	//	0,                 // no software device
-	//	createDeviceFlags,
-	//	0, 0,              // default feature level array
-	//	D3D11_SDK_VERSION,
-	//	&md3dDevice,
-	//	&featureLevel,
-	//	&md3dImmediateContext);
+	SwapChainDesc swapChainDesc;
+	swapChainDesc.hinstance = platform->getInstance();
+	swapChainDesc.hwnd = window->getHandle();
+	swapChainDesc.width = window->getWindowWidth();
+	swapChainDesc.height = window->getWindowHeight();
 
+	ResultPair<Device*> result1 = mInstance.createDevice(deviceDesc);
+	mDevice = result1.second;
 
-	//DXGI_SWAP_CHAIN_DESC sd;
-	//sd.BufferDesc.Width = mClientWidth;
-	//sd.BufferDesc.Height = mClientHeight;
-	//sd.BufferDesc.RefreshRate.Numerator = 60;
-	//sd.BufferDesc.RefreshRate.Denominator = 1;
-	//sd.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	//sd.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
-	//sd.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	//sd.SampleDesc.Count = 1;
-	//sd.SampleDesc.Quality = 0;
-	//sd.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	//sd.BufferCount = 1;
-	//sd.OutputWindow = mhMainWnd;
-	//sd.Windowed = true;
-	//sd.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
-	//sd.Flags = 0;
+	ResultPair<SwapChain*> result2 = mInstance.createSwapChain(swapChainDesc, deviceDesc);
+	mSwapChain = result2.second;
 
-	//HR(dxgiFactory->CreateSwapChain(md3dDevice, &sd, &mSwapChain));
-
+	ResultPair<ImmediateContext*> result3 = mDevice->CreateImmediateContext();
+	mImmediateContext = result3.second;
 	return true;
 }
 
@@ -65,4 +44,6 @@ void SampleApplication::deinit()
 
 void SampleApplication::tick()
 {
+	mSwapChain->prepareFrame();
+	mSwapChain->submitFrame();
 }

@@ -23,10 +23,6 @@ namespace GLOV
 
 	struct DeviceDesc
 	{
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-		HINSTANCE	hinstance;
-		HWND		hwnd;
-#endif
 		uint32_t	physicalDeviceIndex;
 		eQueueType	queueTypeFlag;
 	};
@@ -48,7 +44,7 @@ namespace GLOV
 	class Instance
 	{
 		VkInstance mInstance;
-		std::vector<std::unique_ptr<PhysicalDevice>> mPhysicalDevices;
+		std::vector<std::shared_ptr<PhysicalDevice>> mPhysicalDevices;
 		std::vector<Device> mCreatedDevices;
 		std::vector<SwapChain> mCreatedSwapChain;
 
@@ -57,15 +53,14 @@ namespace GLOV
 		Instance(const Instance&) = delete;
 		~Instance();
 
-		Result init(InstanceDesc desc);
-
-		ResultPair<Device*> createDevice(DeviceDesc desc);
-
 		VkInstance getInstance() const { return mInstance; }
 
-	private:
+		Result init(InstanceDesc desc);
 
-		ResultPair<SwapChain*> createSwapChain(DeviceDesc desc);
+		ResultPair<Device*> createDevice(const DeviceDesc& devDesc);
+		ResultPair<SwapChain*> createSwapChain(const SwapChainDesc& swapDesc, const DeviceDesc& devDesc);
+
+	private:
 
 		DebugMessage mDebugMessage;
 	};
