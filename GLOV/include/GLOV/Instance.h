@@ -3,6 +3,8 @@
 #include <GLOV/GLOV.h>
 #include <GLOV/GLOV_VK.h>
 #include <GLOV/Device.h>
+#include <GLOV/SwapChain.h>
+#include <GLOV/DebugMessage.h>
 #include <vector>
 #include <string>
 
@@ -15,6 +17,8 @@ namespace GLOV
 		std::string	mEngineName;
 		uint32_t	mEngineVersion;
 		bool		mEnableValidationLayer;
+		std::vector<std::string> mExtraInstanceExtensions;
+		std::vector<std::string> mExtraInstanceLayers;
 	};
 
 	struct DeviceDesc
@@ -24,6 +28,7 @@ namespace GLOV
 		HWND		hwnd;
 #endif
 		uint32_t	physicalDeviceIndex;
+		eQueueType	queueTypeFlag;
 	};
 
 	struct QueueFamilyIndices
@@ -38,39 +43,32 @@ namespace GLOV
 	};
 
 	class PhysicalDevice;
-	class Device;
 
+	
 	class Instance
 	{
-		VkInstance mVkInstance;
+		VkInstance mInstance;
 		std::vector<std::unique_ptr<PhysicalDevice>> mPhysicalDevices;
-		std::vector<std::shared_ptr<Device>> mCreatedDevices;
-
-		VkDebugReportCallbackEXT mDebugReportCallback;
+		std::vector<Device> mCreatedDevices;
+		std::vector<SwapChain> mCreatedSwapChain;
 
 	public:
 		Instance();
 		Instance(const Instance&) = delete;
 		~Instance();
 
-		Result Init(InstanceDesc desc);
+		Result init(InstanceDesc desc);
 
-		ResultPair<Device*> CreateDevice(DeviceDesc desc);
+		ResultPair<Device*> createDevice(DeviceDesc desc);
+
+		VkInstance getInstance() const { return mInstance; }
 
 	private:
 
-		Result CreateSurfaceWin32(DeviceDesc desc);
+		ResultPair<SwapChain*> createSwapChain(DeviceDesc desc);
 
-		PFN_vkCreateDebugReportCallbackEXT vkCreateDebugReportCallbackEXT = nullptr;
-		PFN_vkCreateDebugUtilsMessengerEXT vkCreateDebugUtilsMessengerEXT = nullptr;
-		
-		PFN_vkDebugReportMessageEXT vkDebugReportMessageEXT = 0;
-		PFN_vkDestroyDebugReportCallbackEXT vkDestroyDebugReportCallbackEXT = 0;
-		PFN_vkDestroyDebugUtilsMessengerEXT vkDestroyDebugUtilsMessengerEXT = 0;
-
-		static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(VkDebugReportFlagsEXT flags, VkDebugReportObjectTypeEXT objType, uint64_t obj, size_t location, int32_t code, const char* layerPrefix, const char* msg, void* userData);
+		DebugMessage mDebugMessage;
 	};
-
 
 	inline Result VkResultToResult(VkResult vkRes)
 	{

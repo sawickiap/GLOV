@@ -12,14 +12,14 @@ bool SampleApplication::init(PlatformWin32* platform)
 {
 	InstanceDesc instanceDesc;
 	instanceDesc.mEnableValidationLayer = true;
-	mInstance.Init(instanceDesc);
+	mInstance.init(instanceDesc);
 
 	DeviceDesc deviceDesc;
 	deviceDesc.hinstance = platform->getInstance();
 	deviceDesc.hwnd = platform->getWindow(0)->getHandle();
 	deviceDesc.physicalDeviceIndex = 0u;
 
-	ResultPair<Device*> result = mInstance.CreateDevice(deviceDesc);
+	ResultPair<Device*> result = mInstance.createDevice(deviceDesc);
 	mDevice = result.second;
 	//Result tmp = mInstance.CreateSurfaceWin32(deviceDesc);
 	mImmediateContext = mDevice->CreateImmediateContext().second;

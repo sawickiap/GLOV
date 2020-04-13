@@ -5,6 +5,7 @@
 
 namespace GLOV
 {
+	class PhysicalDevice;
 	class ImmediateContext;
 
 	class Device
@@ -12,22 +13,24 @@ namespace GLOV
 		friend class Instance;
 	public:
 		Device();
-		Device(const Device&) = delete;
+		//Device(const Device&) = delete;
 
 		ResultPair<ImmediateContext*> CreateImmediateContext();
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-		void initSurface(HINSTANCE platformHandle, HWND platformWindow, const Instance& instance, size_t devIndex);
-#endif
-	private:
-		//VkInstance mInstance;
-		VkDevice mDevice;
-		VkPhysicalDevice mPhysicalDevice;
-		VkSurfaceKHR mSurface;
+		VkDevice getDevice() const { return mDevice; }
 
-		//QueueFamilyIndices mQueueFamilyIndices;
-		VkQueue mGraphicsQueue;
-		VkQueue mPresentQueue;
+	private:
+		VkInstance mInstance;
+		PhysicalDevice* mPhysicalDevice = nullptr;
+		VkDevice mDevice;
+		//VkSurfaceKHR mSurface;
+		uint32_t mGraphicsQueueIndex = -1;
+		uint32_t mComputeQueueIndex = -1;
+		uint32_t mTransferQueueIndex = -1;
+		VkQueue mQueue;
+		VkSemaphore mPresentComplete;
+		VkSemaphore mRenderComplete;
+		VkSubmitInfo mSubmitInfo;
 	};
 
 }

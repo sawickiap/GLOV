@@ -20,14 +20,17 @@ namespace GLOV
 		std::vector<const char*> mDeviceExtensions;
 		std::vector<VkDisplayPropertiesKHR> mDisplayProperties;
 		std::vector<VkDisplayPlanePropertiesKHR> mDisplayPlaneProperties;
+
 	public:
 		PhysicalDevice();
 		PhysicalDevice(PhysicalDevice&) = delete;
 		~PhysicalDevice() = default;
 
-		Result Init(VkPhysicalDevice desc);
+		Result init(VkPhysicalDevice desc);
+		uint32_t getQueueFamilyIndex(VkQueueFlagBits queueFlags);
+		bool getSupportedDepthFormat(VkFormat& depthFormat);
 
-		VkPhysicalDevice GetPhysicalDevice() const { return mPhysicalDevice; }
+		VkPhysicalDevice getPhysicalDevice() const { return mPhysicalDevice; }
 	};
 
 }

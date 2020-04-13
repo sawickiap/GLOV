@@ -483,6 +483,15 @@ enum class eImageBufferFormat : uint16_t
 	NUM_FORMAT_TYPE = UNDEFINED,
 };
 
+enum eQueueType : uint16_t
+{
+	UNDEFINED		= 0x00,
+	QUEUE_GRAPHICS	= 0x01,
+	QUEUE_COMPUTE	= 0x02,
+	QUEUE_TRANSFER	= 0x04,
+	QUEUE_SPARSE	= 0x08
+};
+
 class GLOV_GL
 {
 	uint32_t hash;
