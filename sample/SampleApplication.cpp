@@ -10,7 +10,7 @@ SampleApplication::SampleApplication()
 
 bool SampleApplication::init(PlatformWin32* platform)
 {
-	const WindowWin32* window = platform->getWindow(0);
+	window = platform->getWindow(0);
 
 	InstanceDesc instanceDesc;
 	instanceDesc.mEnableValidationLayer = true;
@@ -34,6 +34,7 @@ bool SampleApplication::init(PlatformWin32* platform)
 
 	ResultPair<ImmediateContext*> result3 = mDevice->CreateImmediateContext();
 	mImmediateContext = result3.second;
+	mImmediateContext->setSwapChain(mSwapChain);
 	return true;
 }
 
@@ -45,5 +46,18 @@ void SampleApplication::deinit()
 void SampleApplication::tick()
 {
 	mSwapChain->prepareFrame();
+
+	Viewport viewport;
+	viewport.TopLeftX = 0.0f;
+	viewport.TopLeftY = 0.0f;
+	viewport.Width = static_cast<float>(window->getWindowWidth());
+	viewport.Height = static_cast<float>(window->getWindowHeight());
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
+	mImmediateContext->BindViewport(1, viewport);
+
+	std::array color = { 0.5f, 0.5f, 0.5f, 1.0f };
+	mImmediateContext->SetRenderTargets(1, &m_bufferView, nullptr);
+	mImmediateContext->ClearRenderTargetView(m_bufferView.ptr(), color);
 	mSwapChain->submitFrame();
 }

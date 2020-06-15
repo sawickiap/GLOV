@@ -163,7 +163,7 @@ Result SwapChain::create(const SwapChainDesc& swapDesc)
 		colorAttachmentView.flags = 0;
 		colorAttachmentView.image = mImages[i];
 		vkResult = vkCreateImageView(mDevice->getDevice(), &colorAttachmentView, nullptr, &mImageViews[i]);
-		if (vkResult)
+		if (vkResult != VK_SUCCESS)
 		{
 			return Result::VulkanError;
 		}
@@ -175,7 +175,7 @@ Result SwapChain::create(const SwapChainDesc& swapDesc)
 	commandPoolCreateInfo.queueFamilyIndex = mPresentQueueIndex;
 	commandPoolCreateInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
 	vkResult = vkCreateCommandPool(mDevice->getDevice(), &commandPoolCreateInfo, nullptr, &mCommandPool);
-	if (vkResult)
+	if (vkResult != VK_SUCCESS)
 	{
 		return Result::VulkanError;
 	}
@@ -187,7 +187,7 @@ Result SwapChain::create(const SwapChainDesc& swapDesc)
 	commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 	commandBufferAllocateInfo.commandBufferCount = static_cast<uint32_t>(mCommandBuffers.size());
 	vkResult = vkAllocateCommandBuffers(mDevice->getDevice(), &commandBufferAllocateInfo, mCommandBuffers.data());
-	if (vkResult)
+	if (vkResult != VK_SUCCESS)
 	{
 		return Result::VulkanError;
 	}
@@ -199,7 +199,7 @@ Result SwapChain::create(const SwapChainDesc& swapDesc)
 	for (VkFence& fence : mWaitFences)
 	{
 		vkResult = vkCreateFence(mDevice->getDevice(), &fenceCreateInfo, nullptr, &fence);
-		if (vkResult)
+		if (vkResult != VK_SUCCESS)
 		{
 			return Result::VulkanError;
 		}
@@ -256,6 +256,16 @@ Result SwapChain::prepareFrame()
 	}
 	else
 	{
+		vkResult = vkWaitForFences(mDevice->getDevice(), 1, &mWaitFences[currentBuffer], VK_TRUE, UINT64_MAX);
+		if (vkResult != VK_SUCCESS)
+		{
+			return VkResultToResult(vkResult);
+		}
+		vkResult = vkResetFences(mDevice->getDevice(), 1, &mWaitFences[currentBuffer]);
+		if (vkResult != VK_SUCCESS)
+		{
+			return VkResultToResult(vkResult);
+		}
 		return VkResultToResult(vkResult);
 	}
 }
@@ -275,6 +285,19 @@ Result SwapChain::submitFrame()
 			return VkResultToResult(vkResult);
 		}
 	}
+	VkPipelineStageFlags waitStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
+	// The submit info structure specifices a command buffer queue submission batch
+	VkSubmitInfo submitInfo = {};
+	submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+	submitInfo.pWaitDstStageMask = &waitStageMask;               // Pointer to the list of pipeline stages that the semaphore waits will occur at
+	submitInfo.pWaitSemaphores = &mDevice->getPresentComplete();      // Semaphore(s) to wait upon before the submitted command buffer starts executing
+	submitInfo.waitSemaphoreCount = 1;                           // One wait semaphore
+	submitInfo.pSignalSemaphores = &mDevice->getRenderComplete();     // Semaphore(s) to be signaled when command buffers have completed
+	submitInfo.signalSemaphoreCount = 1;                         // One signal semaphore
+	submitInfo.pCommandBuffers = &mCommandBuffers[currentBuffer]; // Command buffers(s) to execute in this batch (submission)
+	submitInfo.commandBufferCount = 1;                           // One command buffer
+
+	vkResult = vkQueueSubmit(mDevice->getQueue(), 1, &submitInfo, VK_NULL_HANDLE);
 	vkResult = vkQueueWaitIdle(mDevice->getQueue());
 	return VkResultToResult(vkResult);
 }

@@ -15,6 +15,7 @@ public:
 	void tick() override;
 
 	PlatformWin32* mPlatform;
+	const WindowWin32* window;
 
 	GLOV::Instance mInstance;
 	GLOV::ImmediateContext* mImmediateContext = nullptr;

@@ -6,11 +6,12 @@
 
 namespace GLOV
 {
-	class Device;
+	class SwapChain;
 
 	class ImmediateContext
 	{
-		Device* mDevice;
+		SwapChain* mSwapChain;
+
 		std::map<uint32_t, VkPipeline> graphicsPipelineMap;
 		ContextVulkanImpl impl;
 
@@ -38,6 +39,8 @@ namespace GLOV
 		void BeforeDraw();
 
 	public:
+		void setSwapChain(SwapChain* swapChain) { mSwapChain = swapChain; }
+
 		void Begin();
 		void End();
 		
@@ -88,7 +91,7 @@ namespace GLOV
 		void CopyImageToBuffer();
 		void UpdateBuffer();
 		void FillBuffer();
-		void ClearColorImage();
+		void ClearRenderTargetView(const RenderTargetView* pRenderTargetView, const std::array<float,4>& colorRGBA);
 		void ClearDepthStencilImage();
 		void ClearAttachments();
 		void ResolveImage();

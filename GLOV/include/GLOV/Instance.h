@@ -53,7 +53,7 @@ namespace GLOV
 		Instance(const Instance&) = delete;
 		~Instance();
 
-		VkInstance getInstance() const { return mInstance; }
+		const VkInstance& getInstance() const { return mInstance; }
 
 		Result init(InstanceDesc desc);
 

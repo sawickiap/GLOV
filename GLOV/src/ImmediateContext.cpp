@@ -199,7 +199,7 @@ void ImmediateContext::FillBuffer()
 {
 }
 
-void ImmediateContext::ClearColorImage() 
+void ImmediateContext::ClearRenderTargetView(const RenderTargetView* pRenderTargetView, const std::array<float, 4>& colorRGBA)
 {
 }
 

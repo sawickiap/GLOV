@@ -2,6 +2,8 @@
 
 #include <GLOV/GLOV.h>
 #include <GLOV/GLOV_VK.h>
+#include <vector>
+#include <memory>
 
 namespace GLOV
 {
@@ -17,11 +19,13 @@ namespace GLOV
 
 		ResultPair<ImmediateContext*> CreateImmediateContext();
 
-		VkDevice getDevice() const { return mDevice; }
-		VkQueue getQueue() const { return mQueue; }
-		VkSemaphore getPresentComplete() const { return mPresentComplete; }
-		VkSemaphore getRenderComplete() const { return mRenderComplete; }
-		VkSubmitInfo getSubmitInfo() const { return mSubmitInfo; }
+		const VkDevice& getDevice() const { return mDevice; }
+		const VkQueue& getQueue() const { return mQueue; }
+		const VkSemaphore& getPresentComplete() const { return mPresentComplete; }
+		const VkSemaphore& getRenderComplete() const { return mRenderComplete; }
+		const VkSubmitInfo& getSubmitInfo() const { return mSubmitInfo; }
+
+		RenderTargetView* createRenderTarget( const RenderTargetDesc& desc );
 
 	private:
 		VkInstance mInstance;
@@ -35,6 +39,8 @@ namespace GLOV
 		VkSemaphore mPresentComplete;
 		VkSemaphore mRenderComplete;
 		VkSubmitInfo mSubmitInfo;
+
+		std::vector<std::shared_ptr<ImmediateContext>> mImmediateContexts;
 	};
 
 }

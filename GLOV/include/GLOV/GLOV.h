@@ -584,13 +584,100 @@ class Program
 {
 };
 
-class Viewport
+struct Viewport
 {
+	float TopLeftX;
+	float TopLeftY;
+	float Width;
+	float Height;
+	float MinDepth;
+	float MaxDepth;
 };
 
 class Scissor
 {
 };
+
+struct RenderViewTexture1D
+{
+	uint32_t mipmapSlice;
+};
+struct RenderViewTexture2D
+{
+	uint32_t mipmapSlice;
+};
+struct RenderViewTexture3D
+{
+	uint32_t mipmapSlice;
+	uint32_t firstWSlice;
+	uint32_t wSize;
+};
+struct RenderViewTexture1DArray
+{
+	uint32_t mipmapSlice;
+	uint32_t firstArraySlice;
+	uint32_t arraySize;
+};
+struct RenderViewTexture2DArray
+{
+	uint32_t mipmapSlice;
+	uint32_t firstArraySlice;
+	uint32_t arraySize;
+};
+struct RenderViewTexture2DMS
+{
+	uint32_t Unused;
+};
+struct RenderViewTexture2DArrayMS
+{
+	uint32_t firstArraySlice;
+	uint32_t arraySize;
+};
+struct RenderViewBuffer
+{
+	union
+	{
+		uint32_t firstElement;
+		uint32_t elementOffset;
+	};
+	union
+	{
+		uint32_t numElements;
+		uint32_t elementWidth;
+	};
+};
+
+enum class eRenderTargetView : uint8_t
+{
+	TEXTURE_1D			= 0x0,
+	TEXTURE_2D			= 0x1,
+	TEXTURE_3D			= 0x2,
+	TEXTURE_1D_ARRAY	= 0x3,
+	TEXTURE_2D_ARRAY	= 0x4,
+	TEXTURE_2D_MS		= 0x5,
+	TEXTURE_2D_MS_ARRAY = 0x6,
+	TEXTURE_BUFFER		= 0x7,
+	TEXTURE_UNDEFINED,
+	NUM_TEXTURE_TYPE = TEXTURE_UNDEFINED
+};
+
+struct RenderTargetDesc : public GLOV_GL
+{
+	eImageBufferFormat	format;
+	eRenderTargetView	textureType;
+	union
+	{
+		RenderViewTexture1D			texture1D;
+		RenderViewTexture2D			texture2D;
+		RenderViewTexture3D			texture3D;
+		RenderViewTexture1DArray	texture1DArray;
+		RenderViewTexture2DArray	texture2DArray;
+		RenderViewTexture2DMS		texture2DMS;
+		RenderViewTexture2DArrayMS	texture2DMSArray;
+		RenderViewBuffer			buffer;
+	};
+};
+
 
 
 class Instance;
@@ -599,7 +686,17 @@ class SwapChain;
 class ImmediateContext;
 class DeferredContext;
 
-Result CreateInstance(Instance*& outInstance);
-void DestroyInstance(Instance* instance);
+struct ImageView
+{
+	VkImageView ImageView;
+};
+
+class RenderTargetView
+{
+public:
+
+	VkFramebuffer mFramebuffer;
+};
+
 
 } // namespace GLOV

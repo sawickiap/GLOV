@@ -30,7 +30,7 @@ namespace GLOV
 		uint32_t getQueueFamilyIndex(VkQueueFlagBits queueFlags);
 		bool getSupportedDepthFormat(VkFormat& depthFormat);
 
-		VkPhysicalDevice getPhysicalDevice() const { return mPhysicalDevice; }
+		const VkPhysicalDevice& getPhysicalDevice() const { return mPhysicalDevice; }
 	};
 
 }
